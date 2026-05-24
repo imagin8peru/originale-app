@@ -203,12 +203,10 @@
         .product-desc { font-size: 0.78rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
 
-        /* --- INTERFAZ CONTADORES VERTICALES --- */
         .salsas-dynamic-container { display: none; flex-direction: column; gap: 12px; width: 100%; margin-top: 5px; }
-        .unit-salsa-block { background-color: rgba(255, 255, 255, 0.9); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; width: 100%; }
+        .unit-salsa-block { background-color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; width: 100%; }
         .unit-salsa-title { font-size: 0.78rem; color: var(--accent-red); font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid rgba(142, 26, 26, 0.1); padding-bottom: 4px;}
 
-        /* ✅ REQUERIMIENTO: DOS COLUMNAS REACCIONARIAS COMPACTAS */
         .ingredients-counter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         
         .ing-counter-row { 
@@ -359,11 +357,11 @@
         .summary-total { font-weight: 700; font-size: 0.95rem; color: var(--text-main); border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 8px; }
         .total-amount { font-size: 1.15rem; color: var(--accent-red); font-weight: 700; }
 
-        /* ✅ RESTAURADO: BOTÓN VERDE ORIGINAL PREMIUM PARA EL ENVÍO */
+        /* --- ✅ FIX: ESTILO VERDE ORIGINAL RESTAURADO AL 100% --- */
         .btn-confirm-order {
             background-color: #1E6B38 !important;
             color: white !important;
-            border: none;
+            border: none !important;
             padding: 15px;
             border-radius: 25px;
             font-weight: 700;
@@ -408,7 +406,7 @@
             </div>
             <div class="category-content">
                 <div class="promo-header-banner">
-                    🎁 ¡PROMO ORIGINALE!<br>Por la compra de cada dos pizzas llévate una gaseosa de 1 litro <span class="highlight-free">gratis</span>
+                    Por cada dos pizzas llévate una gaseosa de 1 litro <span class="highlight-free">gratis</span>
                 </div>
                 
                 <div id="box-gaseosas-regalo" class="gift-gaseosas-container" style="display: none;"></div>
@@ -525,29 +523,13 @@
 
 </div>
 
-<div class="preview-modal-overlay" id="whatsapp-preview-modal">
-    <div class="preview-modal-box">
-        <div class="preview-header">
-            <div class="preview-header-title">
-                <span>💬 Previsualización WhatsApp (DEMO)</span>
-            </div>
-            <span class="preview-close-x" onclick="closePreviewModal()">&times;</span>
-        </div>
-        <div class="preview-chat-body">
-            <div class="preview-msg-bubble" id="whatsapp-preview-text"></div>
-        </div>
-        <div class="preview-footer-actions">
-            <button class="preview-btn-close" onclick="closePreviewModal()">Cerrar Simulación</button>
-        </div>
-    </div>
-</div>
-
 <script>
     let cart = [];
     let selectedPayment = "Yape";
     let productQuantities = {};
     let addedProductsRegistry = {};
     let gaseosasRegaloSeleccionadas = {};
+    let ingredientesMemoriaPizzas = {};
 
     const INGREDIENTES_MAESTROS = [
         "Champignon", "Cebolla Blanca", "Aceituna Verde", "Aceituna Negra", 
@@ -751,39 +733,29 @@
         if (addedProductsRegistry[cardId]) {
             updatePersonalizadaInCart(cardId);
         }
-        // ✅ SOLUCIÓN UX: Recalcula la UI de gaseosas inmediatamente al mutar el contador
         checkPromoGaseosaLogic();
     }
 
-    // ✅ REQUERIMIENTO COMPLETO: CASCADA VERTICAL, 2 COLUMNAS COMPACTAS Y COMPORTAMIENTO COLAPSIBLE INTELIGENTE
     function generateDynamicPersonalizadaBlocks(cardId) {
         const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
         if (!container) return;
 
         const currentQty = productQuantities[cardId] || 1;
         const limitBase = CONFIG_PERSONALIZADAS[cardId].limit;
-        
-        let pasadasSelecciones = [];
-        for(let u=1; u <= 20; u++) {
-            let block = container.querySelector(`[data-pers-un="${u}"]`);
-            if(block) {
-                let mapIng = {};
-                block.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
-                let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
-                let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-                let selectedExtras = [];
-                block.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
-                pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
-            }
-        }
 
         container.innerHTML = '';
 
         for (let i = 1; i <= currentQty; i++) {
-            let datosViejos = pasadasSelecciones[i] || { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+            let pKey = `${cardId}-${i}`;
+            
+            if (!ingredientesMemoriaPizzas[pKey]) {
+                ingredientesMemoriaPizzas[pKey] = { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+                INGREDIENTES_MAESTROS.forEach(ing => { ingredientesMemoriaPizzas[pKey].mapIng[ing] = 0; });
+            }
+
+            let datosViejos = ingredientesMemoriaPizzas[pKey];
             let tituloUnidad = currentQty === 1 ? "Elige los ingredientes de tu pizza" : `ELIGE LOS INGREDIENTES DE TU PIZZA ${i}`;
 
-            // Calcular cuántos ingredientes van seleccionados en esta pizza específica
             let selectedCount = 0;
             let selectedItemsList = [];
             Object.keys(datosViejos.mapIng).forEach(ing => {
@@ -796,10 +768,9 @@
 
             let innerContentHTML = '';
 
-            // COMPORTAMIENTO INTELIGENTE: Si llegó al límite (ej. 4/4), colapsa y muestra el resumen premium
             if (selectedCount >= limitBase) {
                 let listItemsHTML = '';
-                selectedItemsList.forEach((ing, itemIdx) => {
+                selectedItemsList.forEach((ing) => {
                     listItemsHTML += `
                         <div class="completed-item">
                             <span>✔ ${ing}</span>
@@ -814,7 +785,6 @@
                     </div>
                 `;
             } else {
-                // Renderizar la grilla compacta de dos columnas con controles ABAJO del nombre
                 let rowsHTML = '';
                 INGREDIENTES_MAESTROS.forEach(ing => {
                     let count = datosViejos.mapIng[ing] || 0;
@@ -875,119 +845,42 @@
     }
 
     function removeSingleIngOnTheFly(cardId, unitIdx, ingName) {
-        let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
-        if(!block) return;
-        
-        // Forzar reducción del conteo de este ingrediente y redibujar automáticamente para expandir la lista
-        let pasadasSelecciones = [];
-        let blocks = document.querySelectorAll(`#ingredientes-dinamicos-${cardId} [data-pers-un]`);
-        blocks.forEach(b => {
-            let u = b.getAttribute('data-pers-un');
-            let mapIng = {};
-            b.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
-            
-            // Si es la fila que buscamos, le restamos la porción
-            if(parseInt(u) === parseInt(unitIdx) && mapIng[ingName] > 0) {
-                mapIng[ingName]--;
-            }
-
-            let ingAdic = parseInt(b.querySelector('.qty-extra-ing')?.innerText || "0");
-            let mozAdic = parseInt(b.querySelector('.qty-extra-moz')?.innerText || "0");
-            let selectedExtras = [];
-            b.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
-            pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
-        });
-
-        // Regenerar la interfaz en caliente
-        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
-        container.innerHTML = '';
-        
-        const limitBase = CONFIG_PERSONALIZADAS[cardId].limit;
-        for (let i = 1; i <= (productQuantities[cardId] || 1); i++) {
-            let datosViejos = pasadasSelecciones[i];
-            let tituloUnidad = productQuantities[cardId] === 1 ? "Elige los ingredientes de tu pizza" : `ELIGE LOS INGREDIENTES DE TU PIZZA ${i}`;
-            let selectedCount = 0;
-            Object.values(datosViejos.mapIng).forEach(v => selectedCount += v);
-
-            let rowsHTML = '';
-            INGREDIENTES_MAESTROS.forEach(ing => {
-                let count = datosViejos.mapIng[ing] || 0;
-                let highlightClass = count > 0 ? 'is-selected' : '';
-                rowsHTML += `
-                    <div class="ing-counter-row ${highlightClass}" data-p-ing-name="${cardId}-${i}-${ing}">
-                        <span class="ing-name-text">${ing}</span>
-                        <div class="quantity-control" style="padding:2px 6px; gap:8px; width:100%; justify-content:space-between;">
-                            <button class="qty-btn" style="font-size:0.85rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, -1, '${ing}')">−</button>
-                            <span class="qty-val ing-row-qty" data-ing="${ing}" style="font-size:0.8rem;">${count}</span>
-                            <button class="qty-btn btn-plus-ing" style="font-size:0.85rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, 1, '${ing}')">+</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            let extrasHTML = `
-                <div class="extras-section">
-                    <div class="extra-row-control ${datosViejos.ingAdic > 0 ? 'is-selected' : ''}">
-                        <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
-                            <span class="qty-val qty-extra-ing" style="font-size:0.8rem;">${datosViejos.ingAdic}</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
-                        </div>
-                    </div>
-                    <div class="additional-selectors-box" id="box-pers-selectores-${cardId}-${i}"></div>
-                    <div class="extra-row-control ${datosViejos.mozAdic > 0 ? 'is-selected' : ''}">
-                        <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
-                            <span class="qty-val qty-extra-moz" style="font-size:0.8rem;">${datosViejos.mozAdic}</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            container.innerHTML += `
-                <div class="unit-salsa-block" data-pers-un="${i}">
-                    <div class="unit-salsa-title">${tituloUnidad} (<span class="sum-total-counter">${selectedCount}</span>/${limitBase})</div>
-                    <div class="ingredients-counter-grid">${rowsHTML}</div>
-                    ${extrasHTML}
-                </div>
-            `;
-            recalculatePersonalizadaIngredientsLimit(cardId, i, limitBase);
-            renderPersonalizadaAdditionalSelectors(cardId, i, datosViejos.ingAdic, datosViejos.selectedExtras);
+        let pKey = `${cardId}-${unitIdx}`;
+        if(ingredientesMemoriaPizzas[pKey] && ingredientesMemoriaPizzas[pKey].mapIng[ingName] > 0) {
+            ingredientesMemoriaPizzas[pKey].mapIng[ingName]--;
+            generateDynamicPersonalizadaBlocks(cardId);
+            if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
         }
-        if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
     }
 
     function changePersonalizadaIngredientCount(btn, cardId, unitIdx, amount, ingName) {
-        const rowControls = btn.parentElement;
-        const valSpan = rowControls.querySelector('.ing-row-qty');
-        let current = parseInt(valSpan.innerText);
+        let pKey = `${cardId}-${unitIdx}`;
+        let datos = ingredientesMemoriaPizzas[pKey];
+        if(!datos) return;
 
-        let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
         let currentSum = 0;
-        block.querySelectorAll('.ing-row-qty').forEach(el => { currentSum += parseInt(el.innerText); });
+        Object.values(datos.mapIng).forEach(v => currentSum += v);
 
         const limitMax = CONFIG_PERSONALIZADAS[cardId].limit;
         if (amount === 1 && currentSum >= limitMax) return;
 
-        current += amount;
-        if (current < 0) current = 0;
-        valSpan.innerText = current;
+        datos.mapIng[ingName] += amount;
+        if (datos.mapIng[ingName] < 0) datos.mapIng[ingName] = 0;
 
-        const parentRow = block.querySelector(`[data-p-ing-name="${cardId}-${unitIdx}-${ingName}"]`);
-        if (current > 0) parentRow.classList.add('is-selected');
-        else parentRow.classList.remove('is-selected');
-
-        // Evaluar si con este cambio se alcanzó el límite completo para gatillar el colapso
         let updatedSum = 0;
-        block.querySelectorAll('.ing-row-qty').forEach(el => { updatedSum += parseInt(el.innerText); });
-        
-        if (updatedSum >= limitMax) {
-            // Forzar un redibujo limpio para gatillar el colapso
-            setTimeout(() => { generateDynamicPersonalizadaBlocks(cardId); }, 200);
+        Object.values(datos.mapIng).forEach(v => updatedSum += v);
+
+        if (updatedSum >= limitMax || amount === -1) {
+            generateDynamicPersonalizadaBlocks(cardId);
         } else {
+            let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
+            if(block) {
+                block.querySelector('.sum-total-counter').innerText = updatedSum;
+                let row = block.querySelector(`[data-p-ing-name="${cardId}-${unitIdx}-${ingName}"]`);
+                if(datos.mapIng[ingName] > 0) row.classList.add('is-selected');
+                else row.classList.remove('is-selected');
+                row.querySelector('.ing-row-qty').innerText = datos.mapIng[ingName];
+            }
             recalculatePersonalizadaIngredientsLimit(cardId, unitIdx, limitMax);
         }
 
@@ -997,18 +890,32 @@
     function recalculatePersonalizadaIngredientsLimit(cardId, unitIdx, limitMax) {
         let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
         if (!block) return;
+        let pKey = `${cardId}-${unitIdx}`;
+        let datos = ingredientesMemoriaPizzas[pKey];
         let total = 0;
-        block.querySelectorAll('.ing-row-qty').forEach(el => { total += parseInt(el.innerText); });
+        if(datos) { Object.values(datos.mapIng).forEach(v => total += v); }
+        
         block.querySelector('.sum-total-counter').innerText = total;
         block.querySelectorAll('.btn-plus-ing').forEach(btn => { btn.disabled = (total >= limitMax); });
     }
 
     function changePersonalizadaExtraLive(btn, amount, cardId, unitIdx) {
+        let pKey = `${cardId}-${unitIdx}`;
+        let datos = ingredientesMemoriaPizzas[pKey];
+        if(!datos) return;
+
         const valSpan = btn.parentElement.querySelector('.qty-val');
         let current = parseInt(valSpan.innerText);
         current += amount;
         if (current < 0) current = 0;
         valSpan.innerText = current;
+
+        if (valSpan.classList.contains('qty-extra-ing')) {
+            datos.ingAdic = current;
+            renderPersonalizadaAdditionalSelectors(cardId, unitIdx, current, datos.selectedExtras);
+        } else {
+            datos.mozAdic = current;
+        }
 
         const extraRow = btn.closest('.extra-row-control');
         if (extraRow) {
@@ -1016,31 +923,31 @@
             else extraRow.classList.remove('is-selected');
         }
 
-        if (valSpan.classList.contains('qty-extra-ing')) {
-            renderPersonalizadaAdditionalSelectors(cardId, unitIdx, current, []);
-        }
         if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
     }
 
     function renderPersonalizadaAdditionalSelectors(cardId, unitIdx, count, preselectedValues) {
-        const box = document.getElementById(`box-pers-selectores-${cardId}-${unitIdx}`);
+        const box = document.getElementById('box-pers-selectores-' + cardId + '-' + unitIdx);
         if (!box) return;
         box.innerHTML = '';
+        
         for (let i = 0; i < count; i++) {
             let optionsHTML = '';
             let val = preselectedValues[i] || "";
-            
             optionsHTML += `<option value="" ${val === "" ? 'selected' : ''}>Elige tu ingrediente adicional aquí ▼</option>`;
             
             INGREDIENTES_MAESTROS.forEach(ing => {
                 let sel = (ing === val) ? 'selected' : '';
                 optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`;
             });
-            box.innerHTML += `<select class="extra-select-item" onchange="handlePersonalizadaSelectorChange('${cardId}')">${optionsHTML}</select>`;
+            box.innerHTML += `<select class="extra-select-item" data-idx="${i}" onchange="handlePersonalizadaSelectorChange('${cardId}', ${unitIdx}, this)">${optionsHTML}</select>`;
         }
     }
 
-    function handlePersonalizadaSelectorChange(cardId) {
+    function handlePersonalizadaSelectorChange(cardId, unitIdx, selectEl) {
+        let pKey = `${cardId}-${unitIdx}`;
+        let idx = selectEl.getAttribute('data-idx');
+        ingredientesMemoriaPizzas[pKey].selectedExtras[idx] = selectEl.value;
         if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
     }
 
@@ -1048,12 +955,51 @@
         addedProductsRegistry[cardId] = true;
         const btn = document.getElementById(`btn-${cardId}`);
         if (btn) { btn.innerText = "Confirmado ✔"; btn.classList.add("is-added"); }
-        updatePersonalizadaInCart(cardId);
         
+        generateDynamicPersonalizadaBlocks(cardId);
         const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
         if(container) container.style.display = 'flex';
         
+        updatePersonalizadaInCart(cardId);
         checkPromoGaseosaLogic();
+    }
+
+    function updatePersonalizadaInCart(cardId) {
+        cart = cart.filter(item => item.parentCardId !== cardId);
+        const config = CONFIG_PERSONALIZADAS[cardId];
+        const globalQty = productQuantities[cardId] || 1;
+
+        for (let i = 1; i <= globalQty; i++) {
+            let pKey = `${cardId}-${i}`;
+            let datos = ingredientesMemoriaPizzas[pKey];
+            if(!datos) continue;
+
+            let ingLineas = [];
+            Object.keys(datos.mapIng).forEach(ing => {
+                let count = datos.mapIng[ing];
+                if (count > 0) ingLineas.push(count === 1 ? ing : `${ing} (x${count})`);
+            });
+            let txtIngs = ingLineas.length > 0 ? ingLineas.join(', ') : 'Solo Queso y Salsa';
+
+            let totalExtrasCost = (datos.ingAdic * 3.00) + (datos.mozAdic * 6.00);
+            let validExtras = datos.selectedExtras.filter(v => v && v !== "");
+
+            let finalLabelText = globalQty === 1 ? config.name : `${config.name} (#${i})`;
+            let buildOptionsText = `Ingredientes: ${txtIngs}`;
+            if (validExtras.length > 0) buildOptionsText += ` / Extra Ings: [${validExtras.join(', ')}]`;
+            if (datos.mozAdic > 0) buildOptionsText += ` / +${datos.mozAdic} Mozarella Extra`;
+
+            cart.push({
+                uniqueId: `${cardId}-u${i}`,
+                parentCardId: cardId,
+                name: finalLabelText,
+                price: config.price + totalExtrasCost,
+                qty: 1,
+                optionsText: buildOptionsText,
+                type: 'armada'
+            });
+        }
+        renderCart();
     }
 
     function clearPersonalizadaCard(cardId) {
@@ -1061,18 +1007,20 @@
         delete addedProductsRegistry[cardId];
         const btn = document.getElementById(`btn-${cardId}`);
         if (btn) { btn.innerText = "Confirmar"; btn.classList.remove("is-added"); }
+        
+        for(let i=1; i<=20; i++) { delete ingredientesMemoriaPizzas[`${cardId}-${i}`]; }
+        
         productQuantities[cardId] = 1;
         document.getElementById(`${cardId}-qty`).innerText = 1;
-        generateDynamicPersonalizadaBlocks(cardId);
         
         const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
-        if(container) container.style.display = 'none';
+        if(container) { container.innerHTML = ''; container.style.display = 'none'; }
         
         checkPromoGaseosaLogic();
         renderCart();
     }
 
-    /* --- LÓGICA: CÁLCULO COLECTIVO DE GASEOSAS GRATIS --- */
+    /* --- LÓGICA GASEOSAS --- */
     function checkPromoGaseosaLogic() {
         const giftBox = document.getElementById('box-gaseosas-regalo');
         if (!giftBox) return;
@@ -1087,7 +1035,7 @@
         let cantidadGaseosasGratis = Math.floor(totalPizzasArmadas / 2);
 
         if (cantidadGaseosasGratis > 0) {
-            let selectoresHTML = `<div class="gift-title">🎁 ¡Felicidades! Tienes ${cantidadGaseosasGratis} Gaseosa(s) de 1L GRATIS:</div>`;
+            let selectoresHTML = `<div class="gift-title">🎁 ¡Tienes ${cantidadGaseosasGratis} Gaseosa(s) de 1L GRATIS:</div>`;
             
             for (let idx = 1; idx <= cantidadGaseosasGratis; idx++) {
                 let saborPrevio = gaseosasRegaloSeleccionadas[idx] || "";
@@ -1294,7 +1242,7 @@
         renderCart();
     }
 
-    /* --- PAN AL AJO GLOBAL AL FINAL DE TRADICIONALES --- */
+    /* --- PAN AL AJO GLOBAL --- */
     function changeQtyPanAjoGlobal(amount) {
         if (!productQuantities['pan-ajo-global']) productQuantities['pan-ajo-global'] = 1;
         productQuantities['pan-ajo-global'] += amount;
@@ -1350,6 +1298,7 @@
         }
     }
 
+    // Corregido: pasta-lasagna ahora tiene un ID dinámico correcto
     function addSimpleToCart(cardId, pName, price) {
         addedProductsRegistry[cardId] = true;
         const btn = document.getElementById(`btn-${cardId}`);
@@ -1413,7 +1362,6 @@
             `;
         });
 
-        // Renderizar las gaseosas de regalo S/ 0.00
         Object.keys(gaseosasRegaloSeleccionadas).forEach(key => {
             container.innerHTML += `
                 <div class="cart-item-row" style="background-color: rgba(234, 160, 0, 0.03); padding: 6px 4px;">
