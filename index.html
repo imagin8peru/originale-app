@@ -204,6 +204,7 @@
         .product-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
 
         .unit-salsa-block { background-color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; }
+        .unit-salsa-block:last-child { margin-bottom: 0; }
         .unit-salsa-title { font-size: 0.78rem; color: var(--accent-red); font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid rgba(142, 26, 26, 0.1); padding-bottom: 4px;}
 
         .ingredients-counter-grid { display: flex; flex-direction: column; gap: 6px; }
@@ -324,24 +325,6 @@
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted); }
         .summary-total { font-weight: 700; font-size: 0.95rem; color: var(--text-main); border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 8px; }
         .total-amount { font-size: 1.15rem; color: var(--accent-red); font-weight: 700; }
-
-        .btn-bottom-static-container { margin-top: 15px; width: 100%; }
-        .btn-confirm-order {
-            background-color: #1E6B38;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            width: 100%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
 
         /* --- VENTANA PREVIEW DE WHATSAPP --- */
         .preview-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 99999; padding: 15px; backdrop-filter: blur(4px); }
@@ -491,6 +474,23 @@
         </div>
     </div>
 
+</div>
+
+<div class="preview-modal-overlay" id="whatsapp-preview-modal">
+    <div class="preview-modal-box">
+        <div class="preview-header">
+            <div class="preview-header-title">
+                <span>💬 Previsualización WhatsApp (DEMO)</span>
+            </div>
+            <span class="preview-close-x" onclick="closePreviewModal()">&times;</span>
+        </div>
+        <div class="preview-chat-body">
+            <div class="preview-msg-bubble" id="whatsapp-preview-text"></div>
+        </div>
+        <div class="preview-footer-actions">
+            <button class="preview-btn-close" onclick="closePreviewModal()">Cerrar Simulación</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -698,7 +698,11 @@
 
         document.getElementById(`${cardId}-qty`).innerText = productQuantities[cardId];
         generateDynamicPersonalizadaBlocks(cardId);
-        if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
+        
+        if (addedProductsRegistry[cardId]) {
+            updatePersonalizadaInCart(cardId);
+        }
+        checkPromoGaseosaLogic();
     }
 
     function generateDynamicPersonalizadaBlocks(cardId) {
@@ -843,8 +847,11 @@
         box.innerHTML = '';
         for (let i = 0; i < count; i++) {
             let optionsHTML = '';
-            let val = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
-            INGREDIENTES+MAESTROS.forEach(ing => {
+            let val = preselectedValues[i] || "";
+            
+            optionsHTML += `<option value="" ${val === "" ? 'selected' : ''}>Elige tu ingrediente adicional aquí ▼</option>`;
+            
+            INGREDIENTES_MAESTROS.forEach(ing => {
                 let sel = (ing === val) ? 'selected' : '';
                 optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`;
             });
@@ -889,12 +896,12 @@
             let totalExtrasCost = (ingAdic * 3.00) + (mozAdic * 6.00);
 
             let extrasList = [];
-            block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
+            block.querySelectorAll('.extra-select-item').forEach(s => { if(s.value !== "") extrasList.push(s.value); });
 
             let finalLabelText = globalQty === 1 ? config.name : `${config.name} (#${indexUnidad})`;
 
             let buildOptionsText = `Ingredientes: ${txtIngs}`;
-            if (ingAdic > 0) buildOptionsText += ` / Extra Ings: [${extrasList.join(', ')}]`;
+            if (extrasList.length > 0) buildOptionsText += ` / Extra Ings: [${extrasList.join(', ')}]`;
             if (mozAdic > 0) buildOptionsText += ` / +${mozAdic} Mozarella Extra`;
 
             cart.push({
@@ -938,17 +945,13 @@
             }
         });
 
-        // División entera por cada par de pizzas para obtener la cantidad de regalos reales
         let cantidadGaseosasGratis = Math.floor(totalPizzasArmadas / 2);
 
         if (cantidadGaseosasGratis > 0) {
             let selectoresHTML = `<div class="gift-title">🎁 ¡Felicidades! Tienes ${cantidadGaseosasGratis} Gaseosa(s) de 1L GRATIS:</div>`;
             
-            // ✅ CORRECCIÓN 2: RENDERIZADO INDEPENDIENTE EN BUCLE PARA QUE APAREZCA UNA LÍNEA EXCLUSIVA POR CADA GASEOSA GANADA
             for (let idx = 1; idx <= cantidadGaseosasGratis; idx++) {
                 let saborPrevio = gaseosasRegaloSeleccionadas[idx] || "";
-                
-                // ✅ REQUERIMIENTO 3: PRIMERA OPCIÓN NEUTRAL OBLIGATORIA CON TEXTO CLARO
                 let optionsHTML = `<option value="" ${saborPrevio === "" ? 'selected' : ''}>Elige tu gaseosa gratis aquí ▼</option>`;
                 
                 SABORES_GASEOSAS_PROMO.forEach(sabor => {
@@ -968,6 +971,8 @@
             
             giftBox.innerHTML = selectoresHTML;
             giftBox.style.display = 'flex';
+            
+            // Sincronizar en vivo las gaseosas elegidas al regenerarse el DOM
             handleGiftGaseosaSelectChange(); 
         } else {
             giftBox.innerHTML = '';
@@ -977,13 +982,13 @@
         }
     }
 
+    // ✅ CORRECCIÓN: SINCRONIZACIÓN COLECTIVA REAL EN EL RESUMEN DEL CARRITO (CON COSTO S/ 0.00)
     function handleGiftGaseosaSelectChange() {
         gaseosasRegaloSeleccionadas = {};
         const selects = document.querySelectorAll('.selector-regalo-gaseosa');
         selects.forEach(selectEl => {
             let index = selectEl.getAttribute('data-gift-index');
             let value = selectEl.value;
-            // Solo añadir al listado de regalos reales si ha seleccionado un sabor válido
             if (value !== "") {
                 gaseosasRegaloSeleccionadas[index] = value;
             }
@@ -1078,7 +1083,10 @@
         box.innerHTML = '';
         for(let i=0; i < count; i++) {
             let optionsHTML = '';
-            let val = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
+            let val = preselectedValues[i] || "";
+            
+            optionsHTML += `<option value="" ${val === "" ? 'selected' : ''}>Elige tu ingrediente adicional aquí ▼</option>`;
+            
             INGREDIENTES_MAESTROS.forEach(ing => { 
                 let sel = (ing === val) ? 'selected' : '';
                 optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`; 
@@ -1114,14 +1122,14 @@
         if (container && addedProductsRegistry[key]) {
             ingAdic = parseInt(container.querySelector('.extra-t-ing')?.innerText || "0");
             mozAdic = parseInt(container.querySelector('.extra-t-moz')?.innerText || "0");
-            container.querySelectorAll('.extra-select-item').forEach(sel => { extrasElegidosList.push(sel.value); });
+            container.querySelectorAll('.extra-select-item').forEach(sel => { if(sel.value !== "") extrasElegidosList.push(sel.value); });
         }
 
         let basePrice = size === 'grande' ? 25.00 : 35.00;
         let priceWithExtras = basePrice + (ingAdic * 3.00) + (mozAdic * 6.00);
 
         let extrasTextArr = [];
-        if (ingAdic > 0) extrasTextArr.push(`Extra Ings: [${extrasElegidosList.join(', ')}]`);
+        if (extrasElegidosList.length > 0) extrasTextArr.push(`Extra Ings: [${extrasElegidosList.join(', ')}]`);
         if (mozAdic > 0) extrasTextArr.push(`+${mozAdic} Mozarella Extra`);
         let optionsText = extrasTextArr.length > 0 ? extrasTextArr.join(' / ') : 'Receta Tradicional';
 
@@ -1229,16 +1237,6 @@
         renderCart();
     }
 
-    function clearSimpleCard(cardId) {
-        cart = cart.filter(i => i.uniqueId !== cardId);
-        delete addedProductsRegistry[cardId];
-        const btn = document.getElementById(`btn-${cardId}`);
-        if(btn) { btn.innerText = "Agregar"; btn.classList.remove("is-added"); }
-        productQuantities[cardId] = 1;
-        document.getElementById(`${cardId}-qty`).innerText = 1;
-        renderCart();
-    }
-
     /* --- GLOBAL CARRITO RENDER --- */
     function renderCart() {
         const container = document.getElementById('cart-items-container');
@@ -1272,7 +1270,7 @@
             `;
         });
 
-        // Renderizar las gaseosas seleccionadas de regalo S/ 0.00
+        // ✅ SE CORRIGIÓ EL FLUJO ACÁ: Sincronizar y renderizar las gaseosas de regalo en el resumen visual
         Object.keys(gaseosasRegaloSeleccionadas).forEach(key => {
             container.innerHTML += `
                 <div class="cart-item-row" style="background-color: rgba(234, 160, 0, 0.03); padding: 6px 4px;">
@@ -1351,7 +1349,6 @@
         if(phone.length !== 9) { alert("El número de celular debe tener 9 dígitos."); return; }
         if(zoneText !== "Recojo en Local" && !address) { alert("Por favor, ingresa la dirección de entrega."); return; }
 
-        // Validar si el cliente califica para regalos pero dejó selectores vacíos sin escoger sabor
         let totalPizzasArmadas = 0;
         Object.keys(CONFIG_PERSONALIZADAS).forEach(cardId => {
             if (addedProductsRegistry[cardId]) {
@@ -1363,6 +1360,17 @@
 
         if (cantidadRegalosEsperados > cantidadRegalosSeleccionados) {
             alert(`¡Tienes ${cantidadRegalosEsperados} gaseosa(s) gratis por tu compra! Por favor, selecciona el sabor de todas antes de continuar.`);
+            return;
+        }
+
+        let selectoresVacios = false;
+        document.querySelectorAll('.extra-select-item').forEach(sel => {
+            if (sel.value === "" && !sel.classList.contains('selector-regalo-gaseosa')) {
+                selectoresVacios = true;
+            }
+        });
+        if(selectoresVacios) {
+            alert("Por favor, selecciona un sabor para cada ingrediente adicional o reduce el contador de extras si no deseas agregarlos.");
             return;
         }
 
@@ -1381,6 +1389,7 @@
             if (item.optionsText) resumenProductos += `   └ _${item.optionsText}_\n`;
         });
 
+        // ✅ SE CORRIGIÓ EL TEXTO ACÁ: Inyectar las gaseosas gratis en el texto final consolidado de WhatsApp
         if (cantidadRegalosSeleccionados > 0) {
             resumenProductos += `🎁 *GASEOSAS REGALOS DE PROMOCIÓN (S/ 0.00):*\n`;
             Object.keys(gaseosasRegaloSeleccionadas).forEach(key => {
