@@ -3,320 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Originale — Pizza & Pasta</title>
+    <title>Pizzería Pulcinella — Pedidos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-claro: #F9F6F0; 
-            --card-light: rgba(255, 255, 255, 0.5);
-            --accent-red: #8E1A1A; 
-            --accent-gold: #EAA000;
-            --accent-tan: #C69968;
+            --bg-claro: #F4EFE6; 
+            --card-light: rgba(255, 255, 255, 0.4);
+            --accent-red: #8B1E0F; 
+            --accent-gold: #B87A13;
+            --accent-green: #1E6B38;
             --text-main: #2C2C2C;
-            --text-muted: #555555;
-            --border-light: rgba(198, 153, 104, 0.4);
+            --text-muted: #666666;
+            --border-light: rgba(230, 220, 204, 0.8);
             --radius: 12px;
+            --dorado-categoria: #A36A00;
         }
 
-        * {
-            box-shadow: none;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-claro); color: var(--text-main); padding-bottom: 90px; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg-claro);
-            background-image: radial-gradient(var(--border-light) 0.5px, transparent 0.5px), radial-gradient(var(--border-light) 0.5px, var(--bg-claro) 0.5px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
+        header { background-color: #260505; padding: 25px 15px; text-align: center; border-bottom: 4px solid var(--accent-gold); position: relative; }
+        header img { max-width: 130px; height: auto; margin-bottom: 8px; }
+        header h1 { font-size: 1.2rem; color: #FFFFFF; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding: 15px;
-            padding-bottom: 40px; 
-        }
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
 
-        /* --- CABECERA --- */
-        .app-header {
-            background-color: var(--accent-red);
-            border-radius: var(--radius);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 15px;
-            border: 2px solid var(--accent-tan);
-            padding: 20px 10px;
-        }
-
-        .restaurant-logo {
-            max-width: 220px;
-            max-height: 110px;
-            object-fit: contain;
-            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
-        }
-
-        .badge-status {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-top: 12px;
-            border: 1px solid var(--accent-tan);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-        }
-        .badge-status::before { content: ''; width: 6px; height: 6px; background: #00FF66; border-radius: 50%; display: inline-block; }
-
-        /* --- ACORDEONES --- */
-        .block-section {
-            background-color: transparent; 
-            border-radius: var(--radius);
-            border: 1px solid var(--border-light);
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .block-title {
-            padding: 15px;
-            font-size: 1rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid var(--border-light);
-            background-color: rgba(255, 255, 255, 0.9);
-            color: var(--accent-red);
-            text-transform: uppercase;
-        }
-
-        .category-accordion { border-bottom: 1px solid var(--border-light); }
-        .category-accordion:last-child { border-bottom: none; }
-
-        .category-trigger {
-            padding: 16px 15px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
+        .category-accordion { margin-bottom: 12px; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .category-trigger { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; font-weight: 700; font-size: 1rem; cursor: pointer; user-select: none; transition: background 0.3s; }
+        .category-trigger .arrow { font-size: 0.8rem; transition: transform 0.3s; }
         
-        .category-trigger .arrow { transition: transform 0.3s; font-size: 0.8rem; }
-        
-        #cate-armar .category-trigger { background-color: var(--accent-red); color: #ffffff; }
-        #cate-armar .category-trigger .arrow { color: var(--accent-gold); }
-        #cate-tradicionales .category-trigger { background-color: #551010; color: #ffffff; }
-        #cate-tradicionales .category-trigger .arrow { color: var(--accent-tan); }
-        #cate-pastas .category-trigger { background-color: #2F0808; color: #ffffff; }
-        #cate-pastas .category-trigger .arrow { color: var(--accent-tan); }
-        #cate-bebidas .category-trigger { background-color: var(--accent-tan); color: #ffffff; }
-        #cate-bebidas .category-trigger .arrow { color: #2F0808; }
+        #cate-armar .category-trigger { background-color: #4A1111; color: #ffffff; }
+        #cate-tradicionales .category-trigger { background-color: #5C1A1A; color: #ffffff; }
+        #cate-promos .category-trigger { background-color: #3E0B0B; color: #ffffff; }
+        #cate-pastas .category-trigger { background-color: #6E2525; color: #ffffff; }
+        #cate-bebidas .category-trigger { background-color: #7D2D2D; color: #ffffff; }
 
-        .category-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .category-accordion.active .category-content { max-height: 25000px; transition: max-height 0.5s ease-in; }
+        .category-content { display: none; padding: 12px; background-color: var(--card-light); border: 1px solid var(--border-light); border-top: none; border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+        .category-accordion.active .category-content { display: block; }
         .category-accordion.active .category-trigger .arrow { transform: rotate(180deg); }
 
-        /* --- PRODUCT CARDS --- */
-        .product-card {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background-color: var(--card-light);
-            backdrop-filter: blur(4px);
-        }
-        .product-card:last-child { border-bottom: none; }
-        
+        .product-card { background: #ffffff; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(200,185,165,0.3); }
         .product-main { display: flex; gap: 12px; align-items: center; }
-        .product-image { width: 85px; height: 85px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-light); background-color: #ffffff; }
+        .product-image { width: 75px; height: 75px; min-width: 75px; border-radius: 8px; overflow: hidden; background: #FAF6F0; display: flex; align-items: center; justify-content: center; border: 1px solid #EFEAE0; }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
-
         .product-details { flex-grow: 1; }
-        .product-name { font-size: 1rem; font-weight: 700; margin-bottom: 3px; color: var(--accent-red); }
-        .product-desc { font-size: 0.78rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
-        .product-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
+        .product-name { font-weight: 700; font-size: 0.95rem; color: #230202; }
+        .product-desc { font-size: 0.75rem; color: var(--text-muted); margin: 2px 0 6px 0; line-height: 1.25; }
+        .product-price { font-weight: 700; color: var(--accent-red); font-size: 0.95rem; }
 
-        /* --- CONTROLES DE INGREDIENTES CON CONTADOR --- */
-        .salsas-dynamic-container { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 5px; }
-        .unit-salsa-block { background-color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; }
-        .unit-salsa-title { font-size: 0.78rem; color: var(--accent-red); font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid rgba(142, 26, 26, 0.1); padding-bottom: 4px;}
-
-        .ingredients-counter-grid { display: flex; flex-direction: column; gap: 6px; }
+        .product-action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 8px; }
+        .controls-wrapper { display: flex; align-items: center; gap: 6px; }
         
-        /* CAMBIO DE TONO FEEDBACK VISUAL SOLICITADO */
-        .ing-counter-row { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #ffffff; 
-            padding: 6px 10px; 
-            border-radius: 6px; 
-            border: 1px solid var(--border-light); 
-            transition: all 0.25s ease;
-        }
-        .ing-counter-row.is-selected {
-            background-color: rgba(234, 160, 0, 0.12); /* Tono oro/crema suave para advertir selección */
-            border-color: var(--accent-gold);
-        }
+        .quantity-control { display: inline-flex; align-items: center; background: #F0E9DC; border-radius: 20px; padding: 3px 10px; gap: 12px; border: 1px solid #DFD7C7; }
+        .qty-btn { background: none; border: none; font-size: 1.1rem; font-weight: 700; color: var(--accent-red); cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+        .qty-val { font-size: 0.9rem; font-weight: 700; min-width: 14px; text-align: center; }
+        .btn-trash-clear { background: #FAF5EC; border: 1px solid #DDD3C1; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+        .btn-trash-clear:hover { background: #F1E6D2; }
 
-        .ing-name-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+        .btn-add-item { background-color: var(--accent-green); color: white; border: none; padding: 7px 14px; font-weight: 700; font-size: 0.8rem; border-radius: 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s; }
+        .btn-add-item.is-added { background-color: #333333; }
 
-        /* EXTRAS FLOW */
-        .extras-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-light); display: flex; flex-direction: column; gap: 8px; }
-        .extra-row-control { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-light); }
-        .extra-label-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+        .trad-sizes-box { margin-top: 10px; background: #FCFAF6; border-radius: 8px; border: 1px solid #EFEAE0; padding: 4px; }
+        .trad-size-row { padding: 10px 8px; border-bottom: 1px dashed #EFEAE0; }
+        .trad-size-row:last-child { border-bottom: none; }
+
+        .salsas-dynamic-container { margin-top: 10px; background: #FAF6EE; border-radius: 8px; padding: 10px; border: 1px solid #EDE4D3; }
+        .unit-salsa-block { background: #FFFFFF; border: 1px solid #E5DCCB; border-radius: 6px; padding: 10px; margin-bottom: 8px; }
+        .unit-salsa-block:last-child { margin-bottom: 0; }
+        .unit-salsa-title { font-size: 0.75rem; font-weight: 700; color: #503A15; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #F0E8DA; padding-bottom: 4px; }
         
-        .additional-selectors-box { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; padding-left: 10px; border-left: 2px solid var(--accent-gold); }
-        .extra-select-item { width: 100%; padding: 6px; font-size: 0.75rem; border: 1px solid var(--border-light); border-radius: 6px; background-color: #ffffff; font-weight: 700; color: var(--text-main); outline: none; }
+        .ingredients-counter-grid { display: grid; grid-template-columns: 1fr; gap: 4px; max-height: 180px; overflow-y: auto; padding-right: 4px; }
+        .ing-counter-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; background: #FDFDFB; border: 1px solid #EFECE6; border-radius: 6px; }
+        .ing-counter-row.is-selected { background: #FFF9EE; border-color: var(--accent-gold); }
+        .ing-name-text { font-size: 0.75rem; color: #444; font-weight: 700; }
 
-        .product-action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; gap: 8px; }
-        .controls-wrapper { display: flex; align-items: center; gap: 8px; }
+        .extras-section { margin-top: 8px; padding-top: 6px; border-top: 1px dashed #E5DCCB; }
+        .extra-row-control { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+        .extra-label-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-red); }
+        .additional-selectors-box { display: flex; flex-direction: column; gap: 4px; margin: 4px 0; }
+        .extra-select-item { width: 100%; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: 1px solid #CCC; background: #FFF; font-weight: 700; }
 
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid var(--border-light);
-            border-radius: 20px;
-            padding: 4px 12px;
-            background-color: #ffffff;
-        }
-        .qty-btn { background: none; border: none; color: var(--text-main); font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 14px;}
-        .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .qty-val { font-size: 0.88rem; font-weight: 700; min-width: 14px; text-align: center; }
+        .summary-card { background: #260505; color: white; border-radius: var(--radius); padding: 15px; margin-top: 15px; border-top: 4px solid var(--accent-gold); }
+        .summary-title { font-weight: 700; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px; margin-bottom: 10px; color: var(--accent-gold); text-transform: uppercase; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; color: #DDD; text-transform: uppercase; }
+        .form-group input, .form-group select { width: 100%; padding: 8px 12px; font-size: 0.85rem; border-radius: 6px; border: 1px solid #553333; background: #3D1F1F; color: white; }
+        .form-group input:focus, .form-group select:focus { outline: 1px solid var(--accent-gold); }
 
-        .btn-trash-clear {
-            background-color: rgba(220, 53, 69, 0.05);
-            border: 1px solid rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-            font-size: 0.85rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .payment-toggle-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
+        .pay-tab { background: #3D1F1F; border: 1px solid #553333; padding: 8px 4px; text-align: center; font-size: 0.75rem; font-weight: 700; border-radius: 6px; cursor: pointer; color: #CCC; transition: all 0.2s; }
+        .pay-tab.active { background: var(--accent-gold); color: white; border-color: var(--accent-gold); }
 
-        .btn-add-item {
-            background-color: var(--accent-red); 
-            color: white;
-            border: 1px solid var(--accent-red);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-add-item.is-added { background-color: #1E6B38 !important; border-color: #1E6B38 !important; color: #ffffff !important; }
+        .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #FFFFFF; border-top: 1px solid #E2D9C8; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.08); z-index: 999; }
+        .sticky-info { display: flex; flex-direction: column; }
+        .sticky-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
+        .sticky-total { font-size: 1.3rem; font-weight: 700; color: var(--accent-red); line-height: 1.1; }
+        .btn-submit-order { background-color: var(--accent-green); color: white; border: none; padding: 10px 20px; font-weight: 700; font-size: 0.85rem; border-radius: 25px; cursor: pointer; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); }
 
-        .trad-sizes-box { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; width: 100%; }
-        .trad-size-row { background: rgba(255,255,255,0.6); border: 1px solid var(--border-light); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-
-        /* --- FORMULARIOS --- */
-        .form-padding { padding: 15px; background-color: var(--card-light); }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-size: 0.75rem; color: var(--accent-red); margin-bottom: 5px; font-weight: 700; text-transform: uppercase;}
-        .input-group input, .input-group select, .input-group textarea {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background-color: #ffffff;
-            color: var(--text-main);
-            outline: none;
-        }
-        #cash-change-box { background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold); border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
-
-        /* --- PAGOS Y RESUMEN --- */
-        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; background-color: var(--card-light); }
-        .payment-option { border: 1px solid var(--border-light); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; background-color: #ffffff; }
-        .payment-option.selected { border-color: #1E6B38; background-color: rgba(30, 107, 56, 0.05); }
-        .payment-name { font-size: 0.85rem; font-weight: 700; }
-
-        .cart-padding { padding: 15px; background-color: var(--card-light); }
-        .cart-empty { font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 10px 0; }
-        .cart-item-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
-        .cart-item-salsas { font-size: 0.75rem; color: var(--accent-red); display: block; margin-top: 3px; font-style: italic; line-height: 1.3; }
-        
-        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.85rem; color: var(--text-muted); }
-        .summary-total { font-weight: 700; font-size: 0.95rem; color: var(--text-main); border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 8px; }
-        .total-amount { font-size: 1.15rem; color: var(--accent-red); font-weight: 700; }
-
-        .btn-bottom-static-container { margin-top: 15px; width: 100%; }
-        .btn-confirm-order {
-            background-color: #1E6B38;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            width: 100%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* --- VENTANA PREVIEW DE WHATSAPP --- */
-        .preview-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 99999; padding: 15px; backdrop-filter: blur(4px); }
-        .preview-modal-box { background-color: #E5DDD5; width: 100%; max-width: 430px; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: 1px solid #c0c0c0; }
-        .preview-header { background-color: #075E54; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-        .preview-header-title { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .preview-close-x { font-size: 1.3rem; cursor: pointer; font-weight: 700; padding: 0 5px; }
-        .preview-chat-body { padding: 15px; overflow-y: auto; max-height: 380px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; }
-        .preview-msg-bubble { background-color: #DCF8C6; padding: 12px; border-radius: 8px; font-size: 0.82rem; color: #303030; line-height: 1.5; white-space: pre-wrap; font-family: monospace, sans-serif; border: 1px solid #cbdcb7; margin-left: auto; max-width: 90%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); position: relative; }
-        .preview-msg-bubble::after { content: ''; position: absolute; right: -8px; top: 0; width: 0; height: 0; border: 8px solid transparent; border-left-color: #DCF8C6; border-top-color: #DCF8C6; }
-        .preview-footer-actions { background-color: #f0f0f0; padding: 12px; text-align: center; border-top: 1px solid #dfdfdf; }
-        .preview-btn-close { background-color: var(--accent-red); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; width: 100%; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
+        .modal-box { background: white; border-radius: var(--radius); width: 100%; max-width: 380px; padding: 20px; text-align: center; border-top: 5px solid var(--accent-gold); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .modal-title { font-weight: 700; font-size: 1.1rem; color: #260505; margin-bottom: 6px; }
+        .modal-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.3; }
+        .qr-frame { background: #FDFBF7; border: 1px dashed #DDD2C0; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: inline-block; }
+        .qr-frame img { max-width: 180px; height: auto; display: block; }
+        .modal-actions { display: flex; flex-direction: column; gap: 8px; }
+        .btn-modal-primary { background: var(--accent-green); color: white; border: none; padding: 10px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
+        .btn-modal-secondary { background: #EEE; color: #333; border: none; padding: 8px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    
-    <div class="app-header">
-        <img src="imagenes/logo-originale.png" alt="Originale" class="restaurant-logo">
-        <div class="badge-status">Horno encendido — Abierto</div>
-    </div>
+    <header>
+        <img src="imagenes/logo-originale.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'40\'><text x=\'10\' y=\'25\' fill=\'%23fff\' font-weight=\'bold\'>Originale</text></svg>'">
+        <h1>Módulo de Pedidos</h1>
+    </header>
 
-    <div class="block-section">
-        <div class="block-title">🍕 Menú de Pedidos</div>
-        
-        <div class="category-accordion active" id="cate-armar">
+    <div class="container">
+
+        <div class="category-accordion" id="cate-armar">
             <div class="category-trigger" onclick="toggleAccordion('cate-armar')">
                 <span>Arma tu Pizza</span>
                 <span class="arrow">▼</span>
@@ -332,9 +139,17 @@
             <div class="category-content" id="box-pizzas-tradicionales"></div>
         </div>
 
+        <div class="category-accordion" id="cate-promos">
+            <div class="category-trigger" onclick="toggleAccordion('cate-promos')">
+                <span>Promos Imperdibles</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="category-content" id="box-promos"></div>
+        </div>
+
         <div class="category-accordion" id="cate-pastas">
             <div class="category-trigger" onclick="toggleAccordion('cate-pastas')">
-                <span>Pastas</span>
+                <span>Pastas Artesanales</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="category-content" id="box-pastas"></div>
@@ -342,993 +157,1011 @@
 
         <div class="category-accordion" id="cate-bebidas">
             <div class="category-trigger" onclick="toggleAccordion('cate-bebidas')">
-                <span>Bebidas</span>
+                <span>Bebidas Heladas</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="category-content" id="box-bebidas"></div>
         </div>
-    </div>
 
-    <div class="block-section">
-        <div class="block-title">👤 Tus Datos de Entrega</div>
-        <div class="form-padding">
-            <div class="input-group">
-                <label>Nombre completo</label>
+        <div class="summary-card">
+            <div class="summary-title">Datos de Entrega</div>
+            
+            <div class="form-group">
+                <label>Tu Nombre completo</label>
                 <input type="text" id="client-name" placeholder="Ej. Juan Pérez">
             </div>
-            <div class="input-group">
-                <label>Teléfono / WhatsApp (Perú)</label>
-                <input type="tel" id="client-phone" placeholder="Ej. 9XXXXXXXX" maxlength="9" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+
+            <div class="form-group">
+                <label>Dirección de Domicilio o Referencia</label>
+                <input type="text" id="client-address" placeholder="Ej. Av. Larco 123 - Dpto 402">
             </div>
-            <div class="input-group">
-                <label>Zona de delivery</label>
-                <select id="delivery-zone" onchange="handleDeliveryZoneChange()">
-                    <option value="3.00" data-name="Zona Centro" selected>Zona Centro - S/ 3.00</option>
-                    <option value="5.00" data-name="Zona Periférica">Zona Periférica - S/ 5.00</option>
-                    <option value="0.00" data-name="Recojo en Local">Recojo en Local - S/ 0.00</option>
-                </select>
+
+            <div class="form-group">
+                <label>Método de Pago</label>
+                <div class="payment-toggle-grid">
+                    <div class="pay-tab active" id="pay-Yape" onclick="selectPaymentMethod('Yape')">Yape</div>
+                    <div class="pay-tab" id="pay-Plin" onclick="selectPaymentMethod('Plin')">Plin</div>
+                    <div class="pay-tab" id="pay-Efectivo" onclick="selectPaymentMethod('Efectivo')">Efectivo</div>
+                    <div class="pay-tab" id="pay-Tarjeta" onclick="selectPaymentMethod('Tarjeta')">Tarjeta</div>
+                </div>
             </div>
-            <div class="input-group" id="wrapper-address">
-                <label>Dirección de entrega</label>
-                <input type="text" id="client-address" placeholder="Ej. Av. Universitaria 1240">
+
+            <div class="form-group" id="group-change-cash" style="display:none; margin-top:12px;">
+                <label>¿Con cuánto vas a pagar? (Para llevarte vuelto)</label>
+                <input type="text" id="client-cash-change" placeholder="Ej. S/ 100">
             </div>
-            <div class="input-group" id="wrapper-reference">
-                <label>Referencia de ubicación (Opcional)</label>
-                <input type="text" id="client-reference" placeholder="Ej. A dos cuadras del parque">
+        </div>
+
+    </div>
+
+    <div class="sticky-bar">
+        <div class="sticky-info">
+            <span class="sticky-label">Total estimado</span>
+            <span class="sticky-total" id="sticky-total-val">S/ 0.00</span>
+        </div>
+        <button class="btn-submit-order" onclick="processOrderRouting()">
+            <span>Enviar por WhatsApp</span> 📲
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="payment-qr-overlay" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-title" id="modal-qr-title">Pago Digital Directo</div>
+            <div class="modal-desc">Escanea el código QR desde tu app bancaria para concretar la transferencia de tu pedido.</div>
+            <div class="qr-frame">
+                <img src="imagenes/qr-originale.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><rect width=\'150\' height=\'150\' fill=\'%23eee\'/><text x=\'25\' y=\'80\' fill=\'%23666\' font-size=\'12\' font-weight=\'bold\'>[ Captura QR ]</text></svg>'">
             </div>
-            <div class="input-group">
-                <label>Notas para el maestro pizzero</label>
-                <textarea id="client-notes" rows="2" placeholder="Ej. Traer la pizza bien crocante..."></textarea>
+            <div class="modal-actions">
+                <button class="btn-modal-primary" onclick="triggerDirectWhatsApp()">Ya transferí, enviar WhatsApp</button>
+                <button class="btn-modal-secondary" onclick="document.getElementById('payment-qr-overlay').style.display='none'">Modificar Pedido</button>
             </div>
         </div>
     </div>
 
-    <div class="block-section">
-        <div class="block-title">💳 Método de Pago</div>
-        <div class="payment-grid">
-            <div class="payment-option selected" data-method="Yape" onclick="selectPayment(this, 'Yape')">
-                <span class="payment-name">Yape</span>
-            </div>
-            <div class="payment-option" data-method="Plin" onclick="selectPayment(this, 'Plin')">
-                <span class="payment-name">Plin</span>
-            </div>
-            <div class="payment-option" data-method="Tarjeta" onclick="selectPayment(this, 'Tarjeta')">
-                <span class="payment-name">💳 Tarjeta</span>
-            </div>
-            <div class="payment-option" data-method="Efectivo" onclick="selectPayment(this, 'Efectivo')">
-                <span class="payment-name">💵 Efectivo</span>
-            </div>
-        </div>
-        <div style="background-color: var(--card-light); padding: 0 15px 15px 15px;">
-            <div id="cash-change-box">
-                <div class="input-group">
-                    <label style="color: var(--accent-gold);">¿Con cuánto vas a pagar?</label>
-                    <input type="number" id="cash-amount" placeholder="Ej: 100" min="0">
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        let cart = [];
+        let selectedPayment = "Yape";
+        let productQuantities = {};
+        let addedProductsRegistry = {};
 
-    <div class="block-section">
-        <div class="block-title">🧾 Verifica tu Pedido Originale</div>
-        <div class="cart-padding">
-            <div id="cart-items-container">
-                <div class="cart-empty">Aún no has agregado productos</div>
-            </div>
-            <div class="summary-row" style="margin-top: 10px;">
-                <span id="summary-deliv-label">Delivery</span>
-                <span id="summary-deliv-price">S/ 3.00</span>
-            </div>
-            <div class="summary-row summary-total">
-                <span>TOTAL A PAGAR:</span>
-                <span class="total-amount">S/ <span id="total-val">3.00</span></span>
-            </div>
-            <div class="btn-bottom-static-container">
-                <button class="btn-confirm-order" onclick="processOrderFlow()">
-                    Enviar Pedido por WhatsApp
-                </button>
-            </div>
-        </div>
-    </div>
+        const INGREDIENTES_MAESTROS = [
+            "Champignon", "Cebolla Blanca", "Aceituna Verde", "Aceituna Negra", 
+            "Rodaja de Tomate", "Maíz Dulce", "Pimiento", "Pollo", "Piña", 
+            "Carne Molida", "Jamón Inglés", "Salame", "Chorizo Parrillero", 
+            "Chorizo Finas Hierbas", "Salchicha Frankfurt", "Pepperoni", 
+            "Cabanossi", "Tocino"
+        ];
 
-</div>
+        const CONFIG_PERSONALIZADAS = {
+            'pizza-grande': { id: 'pizza-grande', name: 'Pizza Grande (8 porciones)', limit: 4, price: 25.00 },
+            'pizza-familiar': { id: 'pizza-familiar', name: 'Pizza Familiar (12 porciones)', limit: 5, price: 35.00 },
+            'media-pizza': { id: 'media-pizza', name: 'Media Pizza', limit: 3, price: 15.00 }
+        };
 
-<div class="preview-modal-overlay" id="whatsapp-preview-modal">
-    <div class="preview-modal-box">
-        <div class="preview-header">
-            <div class="preview-header-title">
-                <span>💬 Previsualización WhatsApp (DEMO)</span>
-            </div>
-            <span class="preview-close-x" onclick="closePreviewModal()">&times;</span>
-        </div>
-        <div class="preview-chat-body">
-            <div class="preview-msg-bubble" id="whatsapp-preview-text"></div>
-        </div>
-        <div class="preview-footer-actions">
-            <button class="preview-btn-close" onclick="closePreviewModal()">Cerrar Simulación</button>
-        </div>
-    </div>
-</div>
+        const CONFIG_PROMOS = {
+            'promo-2grandes': { id: 'promo-2grandes', name: 'Promo: 2 Pizzas Grandes + Gaseosa 1L', price: 50.00, limitEach: 4, pizzasCount: 2, labelSizes: 'Grande' },
+            'promo-2familiares': { id: 'promo-2familiares', name: 'Promo: 2 Pizzas Familiares + Gaseosa 1L', price: 75.00, limitEach: 5, pizzasCount: 2, labelSizes: 'Familiar' }
+        };
 
-<script>
-    let cart = [];
-    let selectedPayment = "Yape";
-    let productQuantities = {};
-    let addedProductsRegistry = {};
+        const TRADICIONALES_MAESTRAS = [
+            { id: 'americana', name: 'Americana', desc: 'Mozarella, Jamón' },
+            { id: 'americana-2', name: 'Americana 2', desc: 'Mozarella, jamón, aceituna verde, pimiento' },
+            { id: 'hawaiana', name: 'Hawaiana', desc: 'Mozarella, jamón, piña' },
+            { id: 'pepperoni', name: 'Pepperoni', desc: 'Mozarella y pepperoni' },
+            { id: 'carnivora', name: 'Carnívora', desc: 'Mozarella, carne molida, pepperoni, tocino' },
+            { id: 'vegetariana', name: 'Vegetariana', desc: 'Mozarella, champiñones, aceituna verde, aceituna negra, pimiento, cebolla blanca' },
+            { id: 'parrillera-bbq', name: 'Parrillera BBQ', desc: 'Mozarella, jamón, tocino, salchicha, cebolla caramelizada.' }
+        ];
 
-    const INGREDIENTES_MAESTROS = [
-        "Champignon", "Cebolla Blanca", "Aceituna Verde", "Aceituna Negra", 
-        "Rodaja de Tomate", "Maíz Dulce", "Pimiento", "Pollo", "Piña", 
-        "Carne Molida", "Jamón Inglés", "Salame", "Chorizo Parrillero", 
-        "Chorizo Finas Hierbas", "Salchicha Frankfurt", "Pepperoni", 
-        "Cabanossi", "Tocino"
-    ];
+        let globalWhatsAppUrl = "";
 
-    const CONFIG_PERSONALIZADAS = {
-        'pizza-grande': { id: 'pizza-grande', name: 'Pizza Grande (8 porciones)', limit: 4, price: 25.00 },
-        'pizza-familiar': { id: 'pizza-familiar', name: 'Pizza Familiar (12 porciones)', limit: 5, price: 35.00 },
-        'media-pizza': { id: 'media-pizza', name: 'Media Pizza', limit: 3, price: 15.00 }
-    };
-
-    const TRADICIONALES_MAESTRAS = [
-        { id: 'americana', name: 'Americana', desc: 'Mozarella, Jamón' },
-        { id: 'americana-2', name: 'Americana 2', desc: 'Mozarella, jamón, aceituna verde, pimiento' },
-        { id: 'hawaiana', name: 'Hawaiana', desc: 'Mozarella, jamón, piña' },
-        { id: 'pepperoni', name: 'Pepperoni', desc: 'Mozarella y pepperoni' },
-        { id: 'carnivora', name: 'Carnívora', desc: 'Mozarella, carne molida, pepperoni, tocino' },
-        { id: 'vegetariana', name: 'Vegetariana', desc: 'Mozarella, champiñones, aceituna verde, aceituna negra, pimiento, cebolla blanca' },
-        { id: 'parrillera-bbq', name: 'Parrillera BBQ', desc: 'Mozarella, jamón, tocino, salchicha, cebolla caramelizada.' }
-    ];
-
-    function toggleAccordion(id) {
-        document.getElementById(id).classList.toggle('active');
-    }
-
-    function renderSeccionesCatalogo() {
-        // ARMA TU PIZZA (CONTROLES REORGANIZADOS JUSTO DEBAJO DEL PRODUCTO)
-        let htmlArmar = '';
-        Object.values(CONFIG_PERSONALIZADAS).forEach(p => {
-            htmlArmar += `
-                <div class="product-card" id="${p.id}">
-                    <div class="product-main">
-                        <div class="product-image"><img src="imagenes/${p.id}.png" onerror="this.src='imagenes/default-pizza.png'"></div>
-                        <div class="product-details">
-                            <div class="product-name">${p.name}</div>
-                            <div class="product-desc">Elige hasta ${p.limit} porciones de ingredientes incluidos de la lista (puedes repetir).</div>
-                            <div class="product-price">S/ ${p.price.toFixed(2)}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="product-action-row" style="border-bottom: 1px dashed var(--border-light); padding-bottom: 10px;">
-                        <div class="controls-wrapper">
-                            <div class="quantity-control">
-                                <button class="qty-btn" onclick="changeQtyPersonalizada('${p.id}', -1)">−</button>
-                                <span class="qty-val" id="${p.id}-qty">1</span>
-                                <button class="qty-btn" onclick="changeQtyPersonalizada('${p.id}', 1)">+</button>
-                            </div>
-                            <button class="btn-trash-clear" onclick="clearPersonalizadaCard('${p.id}')">🗑️</button>
-                        </div>
-                        <button class="btn-add-item" id="btn-${p.id}" onclick="addPersonalizadaToCart('${p.id}')">Confirmar</button>
-                    </div>
-
-                    <div class="salsas-dynamic-container" id="ingredientes-dinamicos-${p.id}"></div>
-                </div>
-            `;
-        });
-        document.getElementById('box-pizzas-personalizadas').innerHTML = htmlArmar;
-
-        // TRADICIONALES
-        let htmlTrad = '';
-        TRADICIONALES_MAESTRAS.forEach(t => {
-            htmlTrad += `
-                <div class="product-card" id="trad-${t.id}">
-                    <div class="product-main">
-                        <div class="product-image"><img src="imagenes/${t.id}.png" onerror="this.src='imagenes/default-pizza.png'"></div>
-                        <div class="product-details">
-                            <div class="product-name">${t.name}</div>
-                            <div class="product-desc">${t.desc}</div>
-                        </div>
-                    </div>
-                    <div class="trad-sizes-box">
-                        <div class="trad-size-row" id="trad-row-${t.id}-grande">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.8rem; font-weight:700;">Grande (8 porciones)</span>
-                                <span class="product-price">S/ 25.00</span>
-                            </div>
-                            <div class="salsas-dynamic-container" id="extras-trad-${t.id}-grande"></div>
-                            <div class="product-action-row">
-                                <div class="quantity-control">
-                                    <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'grande', -1)">−</button>
-                                    <span class="qty-val" id="qty-${t.id}-grande">1</span>
-                                    <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'grande', 1)">+</button>
-                                </div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="btn-trash-clear" onclick="clearTradCard('${t.id}', 'grande')">🗑️</button>
-                                    <button class="btn-add-item" id="btn-${t.id}-grande" onclick="addTradToCart('${t.id}', '${t.name}', 'Grande', 25.00)">Agregar</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="trad-size-row" id="trad-row-${t.id}-familiar">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.8rem; font-weight:700;">Familiar (12 porciones)</span>
-                                <span class="product-price">S/ 35.00</span>
-                            </div>
-                            <div class="salsas-dynamic-container" id="extras-trad-${t.id}-familiar"></div>
-                            <div class="product-action-row">
-                                <div class="quantity-control">
-                                    <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'familiar', -1)">−</button>
-                                    <span class="qty-val" id="qty-${t.id}-familiar">1</span>
-                                    <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'familiar', 1)">+</button>
-                                </div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="btn-trash-clear" onclick="clearTradCard('${t.id}', 'familiar')">🗑️</button>
-                                    <button class="btn-add-item" id="btn-${t.id}-familiar" onclick="addTradToCart('${t.id}', '${t.name}', 'Familiar', 35.00)">Agregar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        document.getElementById('box-pizzas-tradicionales').innerHTML = htmlTrad;
-
-        // PASTAS
-        document.getElementById('box-pastas').innerHTML = `
-            <div class="product-card" id="pasta-lasagna">
-                <div class="product-main">
-                    <div class="product-image"><img src="imagenes/lasagna.png" onerror="this.src='imagenes/default-pizza.png'"></div>
-                    <div class="product-details">
-                        <div class="product-name">Lasagna</div>
-                        <div class="product-desc">Mozarella, salsa bolognesa, bechamel, jamón. Peso aproximado de 850 g.</div>
-                        <div class="product-price">S/ 25.00</div>
-                    </div>
-                </div>
-                <div class="product-action-row" style="margin-top:10px;">
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="changeSimpleQty('pasta-lasagna', -1)">−</button>
-                        <span class="qty-val" id="pasta-lasagna-qty">1</span>
-                        <button class="qty-btn" onclick="changeSimpleQty('pasta-lasagna', 1)">+</button>
-                    </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-trash-clear" onclick="clearSimpleCard('pasta-lasagna')">🗑️</button>
-                        <button class="btn-add-item" id="btn-pasta-lasagna" onclick="addSimpleToCart('pasta-lasagna', 'Lasagna', 25.00)">Agregar</button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // BEBIDAS
-        document.getElementById('box-bebidas').innerHTML = `
-            <div class="product-card" id="bebida-pepsi">
-                <div class="product-main">
-                    <div class="product-image"><img src="imagenes/pepsi.png" onerror="this.src='imagenes/default-pizza.png'"></div>
-                    <div class="product-details">
-                        <div class="product-name">Pepsi 600 ml</div>
-                        <div class="product-desc">Bebida helada y refrescante.</div>
-                        <div class="product-price">S/ 6.00</div>
-                    </div>
-                </div>
-                <div class="product-action-row" style="margin-top:10px;">
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="changeSimpleQty('bebida-pepsi', -1)">−</button>
-                        <span class="qty-val" id="bebida-pepsi-qty">1</span>
-                        <button class="qty-btn" onclick="changeSimpleQty('bebida-pepsi', 1)">+</button>
-                    </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-trash-clear" onclick="clearSimpleCard('bebida-pepsi')">🗑️</button>
-                        <button class="btn-add-item" id="btn-bebida-pepsi" onclick="addSimpleToCart('bebida-pepsi', 'Pepsi 600 ml', 6.00)">Agregar</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /* --- ARMA TU PIZZA: CONTADORES CON CAMBIO DE TONO VISUAL --- */
-    function changeQtyPersonalizada(cardId, amount) {
-        if (!productQuantities[cardId]) productQuantities[cardId] = 1;
-        productQuantities[cardId] += amount;
-        if (productQuantities[cardId] < 1) productQuantities[cardId] = 1;
-
-        document.getElementById(`${cardId}-qty`).innerText = productQuantities[cardId];
-        generateDynamicIngredientBlocks(cardId);
-        
-        if (addedProductsRegistry[cardId]) {
-            updatePersonalizadaInCart(cardId);
-        }
-    }
-
-    function generateDynamicIngredientBlocks(cardId) {
-        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
-        if (!container) return;
-
-        const currentQty = productQuantities[cardId] || 1;
-        const limitBase = CONFIG_PERSONALIZADAS[cardId].limit;
-        
-        let pasadasSelecciones = [];
-        for(let u=1; u <= 20; u++) {
-            let block = container.querySelector(`[data-unidad="${u}"]`);
-            if(block) {
-                let mapIng = {};
-                block.querySelectorAll('.ing-row-qty').forEach(el => {
-                    mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText);
-                });
-                let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
-                let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-                let panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
-                
-                let selectedExtras = [];
-                block.querySelectorAll('.extra-select-item').forEach(sel => {
-                    selectedExtras.push(sel.value);
-                });
-
-                pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, panAdic, selectedExtras };
-            }
+        function toggleAccordion(id) {
+            document.getElementById(id).classList.toggle('active');
         }
 
-        container.innerHTML = '';
+        function renderSeccionesCatalogo() {
+            // ARMA TU PIZZA
+            let htmlArmar = '';
+            Object.values(CONFIG_PERSONALIZADAS).forEach(p => {
+                htmlArmar += `
+                    <div class="product-card" id="${p.id}">
+                        <div class="product-main">
+                            <div class="product-image"><img src="imagenes/${p.id}.png" onerror="this.src='imagenes/default-pizza.png'"></div>
+                            <div class="product-details">
+                                <div class="product-name">${p.name}</div>
+                                <div class="product-desc">Elige hasta ${p.limit} porciones de ingredientes incluidos de la lista (puedes repetir).</div>
+                                <div class="product-price">S/ ${p.price.toFixed(2)}</div>
+                            </div>
+                        </div>
+                        <div class="product-action-row" style="border-bottom: 1px dashed var(--border-light); padding-bottom: 10px;">
+                            <div class="controls-wrapper">
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="changeQtyPersonalizada('${p.id}', -1)">−</button>
+                                    <span class="qty-val" id="${p.id}-qty">1</span>
+                                    <button class="qty-btn" onclick="changeQtyPersonalizada('${p.id}', 1)">+</button>
+                                </div>
+                                <button class="btn-trash-clear" onclick="clearPersonalizadaCard('${p.id}')">🗑️</button>
+                            </div>
+                            <button class="btn-add-item" id="btn-${p.id}" onclick="addPersonalizadaToCart('${p.id}')">Confirmar</button>
+                        </div>
+                        <div class="salsas-dynamic-container" id="ingredientes-dinamicos-${p.id}"></div>
+                    </div>
+                `;
+            });
+            document.getElementById('box-pizzas-personalizadas').innerHTML = htmlArmar;
 
-        for (let i = 1; i <= currentQty; i++) {
-            let datosViejos = pasadasSelecciones[i] || { mapIng: {}, ingAdic: 0, mozAdic: 0, panAdic: 0, selectedExtras: [] };
-            
-            let tituloUnidad = (currentQty === 1) 
-                ? "Elige los ingredientes de tu pizza" 
-                : `ELIGE LOS INGREDIENTES DE TU PIZZA ${i}`;
-
-            let rowsHTML = '';
-            INGREDIENTES_MAESTROS.forEach(ing => {
-                let currentCount = datosViejos.mapIng[ing] || 0;
-                
-                // CORRECCIÓN 2: DETERMINAR SI LA FILA DEBE LLEVAR EL TONO DIFERENTE DESDE EL INICIO
-                let highlightClass = currentCount > 0 ? 'is-selected' : '';
-
-                rowsHTML += `
-                    <div class="ing-counter-row ${highlightClass}" data-ing-name="${ing}">
-                        <span class="ing-name-text">${ing}</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeIngredientCount(this, '${cardId}', ${i}, -1, '${ing}')">−</button>
-                            <span class="qty-val ing-row-qty" data-ing="${ing}" style="font-size:0.8rem;">${currentCount}</span>
-                            <button class="qty-btn btn-plus-ing" style="font-size:0.9rem;" onclick="changeIngredientCount(this, '${cardId}', ${i}, 1, '${ing}')">+</button>
+            // TRADICIONALES
+            let htmlTrad = '';
+            TRADICIONALES_MAESTRAS.forEach(t => {
+                htmlTrad += `
+                    <div class="product-card" id="trad-${t.id}">
+                        <div class="product-main">
+                            <div class="product-image"><img src="imagenes/${t.id}.png" onerror="this.src='imagenes/default-pizza.png'"></div>
+                            <div class="product-details">
+                                <div class="product-name">${t.name}</div>
+                                <div class="product-desc">${t.desc}</div>
+                            </div>
+                        </div>
+                        <div class="trad-sizes-box">
+                            <div class="trad-size-row" id="trad-row-${t.id}-grande">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:0.8rem; font-weight:700;">Grande (8 porciones)</span>
+                                    <span class="product-price">S/ 25.00</span>
+                                </div>
+                                <div class="salsas-dynamic-container" id="extras-trad-${t.id}-grande"></div>
+                                <div class="product-action-row">
+                                    <div class="quantity-control">
+                                        <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'grande', -1)">−</button>
+                                        <span class="qty-val" id="qty-${t.id}-grande">1</span>
+                                        <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'grande', 1)">+</button>
+                                    </div>
+                                    <div style="display:flex; gap:6px;">
+                                        <button class="btn-trash-clear" onclick="clearTradCard('${t.id}', 'grande')">🗑️</button>
+                                        <button class="btn-add-item" id="btn-${t.id}-grande" onclick="addTradToCart('${t.id}', '${t.name}', 'Grande', 25.00)">Agregar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="trad-size-row" id="trad-row-${t.id}-familiar">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:0.8rem; font-weight:700;">Familiar (12 porciones)</span>
+                                    <span class="product-price">S/ 35.00</span>
+                                </div>
+                                <div class="salsas-dynamic-container" id="extras-trad-${t.id}-familiar"></div>
+                                <div class="product-action-row">
+                                    <div class="quantity-control">
+                                        <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'familiar', -1)">−</button>
+                                        <span class="qty-val" id="qty-${t.id}-familiar">1</span>
+                                        <button class="qty-btn" onclick="changeQtyTrad('${t.id}', 'familiar', 1)">+</button>
+                                    </div>
+                                    <div style="display:flex; gap:6px;">
+                                        <button class="btn-trash-clear" onclick="clearTradCard('${t.id}', 'familiar')">🗑️</button>
+                                        <button class="btn-add-item" id="btn-${t.id}-familiar" onclick="addTradToCart('${t.id}', '${t.name}', 'Familiar', 35.00)">Agregar</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            document.getElementById('box-pizzas-tradicionales').innerHTML = htmlTrad;
 
-            let extrasHTML = `
-                <div class="extras-section">
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeExtraQtyPersonalizada(this, -1, '${cardId}', ${i})">−</button>
-                            <span class="qty-val qty-extra-ing" style="font-size:0.8rem;">${datosViejos.ingAdic}</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeExtraQtyPersonalizada(this, 1, '${cardId}', ${i})">+</button>
+            // PROMOS
+            let htmlPromos = '';
+            Object.values(CONFIG_PROMOS).forEach(pr => {
+                htmlPromos += `
+                    <div class="product-card" id="${pr.id}">
+                        <div class="product-main">
+                            <div class="product-image"><img src="imagenes/${pr.id}.png" onerror="this.src='imagenes/default-pizza.png'"></div>
+                            <div class="product-details">
+                                <div class="product-name">${pr.name}</div>
+                                <div class="product-desc">Combo especial. Configura los ingredientes de cada pizza incluida a continuación.</div>
+                                <div class="product-price">S/ ${pr.price.toFixed(2)}</div>
+                            </div>
                         </div>
+                        <div class="product-action-row" style="border-bottom: 1px dashed var(--border-light); padding-bottom: 10px;">
+                            <div class="controls-wrapper">
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="changeQtyPromo('${pr.id}', -1)">−</button>
+                                    <span class="qty-val" id="${pr.id}-qty">1</span>
+                                    <button class="qty-btn" onclick="changeQtyPromo('${pr.id}', 1)">+</button>
+                                </div>
+                                <button class="btn-trash-clear" onclick="clearPromoCard('${pr.id}')">🗑️</button>
+                            </div>
+                            <button class="btn-add-item" id="btn-${pr.id}" onclick="addPromoToCart('${pr.id}')">Confirmar Promo</button>
+                        </div>
+                        <div class="salsas-dynamic-container" id="ingredientes-dinamicos-${pr.id}"></div>
                     </div>
-                    <div class="additional-selectors-box" id="box-selectores-extras-${cardId}-${i}"></div>
-
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeExtraQtyPersonalizada(this, -1, '${cardId}', ${i})">−</button>
-                            <span class="qty-val qty-extra-moz" style="font-size:0.8rem;">${datosViejos.mozAdic}</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeExtraQtyPersonalizada(this, 1, '${cardId}', ${i})">+</button>
-                        </div>
-                    </div>
-                    ${cardId === 'media-pizza' ? `
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Pan al Ajo Especial (+S/ 9.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeExtraQtyPersonalizada(this, -1, '${cardId}', ${i})">−</button>
-                            <span class="qty-val qty-extra-pan" style="font-size:0.8rem;">${datosViejos.panAdic}</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeExtraQtyPersonalizada(this, 1, '${cardId}', ${i})">+</button>
-                        </div>
-                    </div>` : ''}
-                </div>
-            `;
-
-            container.innerHTML += `
-                <div class="unit-salsa-block" data-unidad="${i}" style="margin-top:12px;">
-                    <div class="unit-salsa-title" id="title-block-${cardId}-${i}">${tituloUnidad} (<span class="sum-total-counter">0</span>/${limitBase})</div>
-                    <div class="ingredients-counter-grid">${rowsHTML}</div>
-                    ${extrasHTML}
-                </div>
-            `;
-            
-            recalculateIngredientsLimit(cardId, i, limitBase);
-            renderAdditionalSelectors(cardId, i, datosViejos.ingAdic, datosViejos.selectedExtras);
-        }
-    }
-
-    function changeIngredientCount(btn, cardId, unidadIdx, amount, ingName) {
-        const rowControls = btn.parentElement;
-        const valSpan = rowControls.querySelector('.ing-row-qty');
-        let current = parseInt(valSpan.innerText);
-        
-        let targetBlock = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-unidad="${unidadIdx}"]`);
-        let currentSum = 0;
-        targetBlock.querySelectorAll('.ing-row-qty').forEach(el => { currentSum += parseInt(el.innerText); });
-        
-        const limitMax = CONFIG_PERSONALIZADAS[cardId].limit;
-
-        if (amount === 1 && currentSum >= limitMax) return; 
-        
-        current += amount;
-        if (current < 0) current = 0;
-        valSpan.innerText = current;
-
-        // CORRECCIÓN 2 (CONTINUACIÓN): CAMBIO DINÁMICO DE TONO DE LA FILA EN TIEMPO REAL
-        const parentRowElement = targetBlock.querySelector(`[data-ing-name="${ingName}"]`);
-        if (current > 0) {
-            parentRowElement.classList.add('is-selected');
-        } else {
-            parentRowElement.classList.remove('is-selected');
-        }
-
-        recalculateIngredientsLimit(cardId, unidadIdx, limitMax);
-
-        if (addedProductsRegistry[cardId]) {
-            updatePersonalizadaInCart(cardId);
-        }
-    }
-
-    function recalculateIngredientsLimit(cardId, unidadIdx, limitMax) {
-        let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-unidad="${unidadIdx}"]`);
-        if (!block) return;
-
-        let totalSuma = 0;
-        block.querySelectorAll('.ing-row-qty').forEach(el => { totalSuma += parseInt(el.innerText); });
-
-        block.querySelector('.sum-total-counter').innerText = totalSuma;
-
-        block.querySelectorAll('.btn-plus-ing').forEach(btn => {
-            if (totalSuma >= limitMax) {
-                btn.disabled = true;
-            } else {
-                btn.disabled = false;
-            }
-        });
-    }
-
-    function changeExtraQtyPersonalizada(btn, amount, cardId, unidadIdx) {
-        const valSpan = btn.parentElement.querySelector('.qty-val');
-        let current = parseInt(valSpan.innerText);
-        current += amount;
-        if (current < 0) current = 0;
-        valSpan.innerText = current;
-
-        if (valSpan.classList.contains('qty-extra-ing')) {
-            renderAdditionalSelectors(cardId, unidadIdx, current, []);
-        }
-
-        if (addedProductsRegistry[cardId]) {
-            updatePersonalizadaInCart(cardId);
-        }
-    }
-
-    function renderAdditionalSelectors(cardId, unidadIdx, count, preselectedValues) {
-        const box = document.getElementById(`box-selectores-extras-${cardId}-${unidadIdx}`);
-        if (!box) return;
-        box.innerHTML = '';
-
-        for (let i = 0; i < count; i++) {
-            let optionsHTML = '';
-            let selectedValue = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
-            
-            INGREDIENTES_MAESTROS.forEach(ing => {
-                let selAttr = (ing === selectedValue) ? 'selected' : '';
-                optionsHTML += `<option value="${ing}" ${selAttr}>${ing}</option>`;
+                `;
             });
+            document.getElementById('box-promos').innerHTML = htmlPromos;
 
-            box.innerHTML += `
-                <select class="extra-select-item" onchange="handleExtraSelectChange('${cardId}')">
-                    ${optionsHTML}
-                </select>
+            // PASTAS
+            document.getElementById('box-pastas').innerHTML = `
+                <div class="product-card" id="pasta-lasagna">
+                    <div class="product-main">
+                        <div class="product-image"><img src="imagenes/lasagna.png" onerror="this.src='imagenes/default-pizza.png'"></div>
+                        <div class="product-details">
+                            <div class="product-name">Lasagna</div>
+                            <div class="product-desc">Mozarella, salsa bolognesa, bechamel, jamón. Peso aproximado de 850 g.</div>
+                            <div class="product-price">S/ 25.00</div>
+                        </div>
+                    </div>
+                    <div class="product-action-row" style="margin-top:10px;">
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="changeSimpleQty('pasta-lasagna', -1)">−</button>
+                            <span class="qty-val" id="pasta-lasagna-qty">1</span>
+                            <button class="qty-btn" onclick="changeSimpleQty('pasta-lasagna', 1)">+</button>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn-trash-clear" onclick="clearSimpleCard('pasta-lasagna')">🗑️</button>
+                            <button class="btn-add-item" id="btn-pasta-lasagna" onclick="addSimpleToCart('pasta-lasagna', 'Lasagna', 25.00)">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // BEBIDAS
+            document.getElementById('box-bebidas').innerHTML = `
+                <div class="product-card" id="bebida-pepsi">
+                    <div class="product-main">
+                        <div class="product-image"><img src="imagenes/pepsi.png" onerror="this.src='imagenes/default-pizza.png'"></div>
+                        <div class="product-details">
+                            <div class="product-name">Pepsi 600 ml</div>
+                            <div class="product-desc">Bebida helada y refrescante.</div>
+                            <div class="product-price">S/ 6.00</div>
+                        </div>
+                    </div>
+                    <div class="product-action-row" style="margin-top:10px;">
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="changeSimpleQty('bebida-pepsi', -1)">−</button>
+                            <span class="qty-val" id="bebida-pepsi-qty">1</span>
+                            <button class="qty-btn" onclick="changeSimpleQty('bebida-pepsi', 1)">+</button>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn-trash-clear" onclick="clearSimpleCard('bebida-pepsi')">🗑️</button>
+                            <button class="btn-add-item" id="btn-bebida-pepsi" onclick="addSimpleToCart('bebida-pepsi', 'Pepsi 600 ml', 6.00)">Agregar</button>
+                        </div>
+                    </div>
+                </div>
             `;
         }
-    }
 
-    function deleteHighlightOnReset(cardId) {
-        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
-        if(container) {
-            container.querySelectorAll('.ing-counter-row').forEach(row => row.classList.remove('is-selected'));
+        /* --- CONTROL CATEGORÍA: ARMA TU PIZZA --- */
+        function changeQtyPersonalizada(cardId, amount) {
+            if (!productQuantities[cardId]) productQuantities[cardId] = 1;
+            productQuantities[cardId] += amount;
+            if (productQuantities[cardId] < 1) productQuantities[cardId] = 1;
+
+            document.getElementById(`${cardId}-qty`).innerText = productQuantities[cardId];
+            generateDynamicPersonalizadaBlocks(cardId);
+            if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
         }
-    }
 
-    function handleExtraSelectChange(cardId) {
-        if (addedProductsRegistry[cardId]) {
-            updatePersonalizadaInCart(cardId);
-        }
-    }
+        function generateDynamicPersonalizadaBlocks(cardId) {
+            const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+            if (!container) return;
 
-    function addPersonalizadaToCart(cardId) {
-        addedProductsRegistry[cardId] = true;
-        const btn = document.getElementById(`btn-${cardId}`);
-        if(btn) {
-            btn.innerText = "Confirmado ✔";
-            btn.classList.add("is-added");
-        }
-        updatePersonalizadaInCart(cardId);
-    }
+            const globalQty = productQuantities[cardId] || 1;
+            const config = CONFIG_PERSONALIZADAS[cardId];
 
-    function updatePersonalizadaInCart(cardId) {
-        cart = cart.filter(item => item.parentCardId !== cardId);
-
-        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
-        const blocks = container.querySelectorAll('[data-unidad]');
-        const baseConfig = CONFIG_PERSONALIZADAS[cardId];
-
-        blocks.forEach(block => {
-            const indexUnidad = block.getAttribute('data-unidad');
-            
-            let arrayLineas = [];
-            block.querySelectorAll('.ing-row-qty').forEach(el => {
-                let count = parseInt(el.innerText);
-                if (count > 0) {
-                    arrayLineas.push(count === 1 ? el.getAttribute('data-ing') : `${el.getAttribute('data-ing')} (x${count})`);
+            let pasadasSelecciones = [];
+            for (let u = 1; u <= 20; u++) {
+                let block = container.querySelector(`[data-pers-un="${u}"]`);
+                if (block) {
+                    let mapIng = {};
+                    block.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
+                    let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
+                    let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                    let selectedExtras = [];
+                    block.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
+                    pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
                 }
+            }
+
+            container.innerHTML = '';
+
+            for (let idx = 1; idx <= globalQty; idx++) {
+                let datosViejos = pasadasSelecciones[idx] || { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+                let titleLabel = globalQty > 1 ? `CONFIGURA TU PIZZA #${idx}` : `CONFIGURA LOS INGREDIENTES INCLUIDOS`;
+
+                let rowsHTML = '';
+                INGREDIENTES_MAESTROS.forEach(ing => {
+                    let count = datosViejos.mapIng[ing] || 0;
+                    let highlightClass = count > 0 ? 'is-selected' : '';
+                    rowsHTML += `
+                        <div class="ing-counter-row ${highlightClass}" data-p-ing-name="${cardId}-${idx}-${ing}">
+                            <span class="ing-name-text">${ing}</span>
+                            <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${idx}, -1, '${ing}')">−</button>
+                                <span class="qty-val ing-row-qty" data-ing="${ing}" style="font-size:0.8rem;">${count}</span>
+                                <button class="qty-btn btn-plus-ing" style="font-size:0.9rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${idx}, 1, '${ing}')">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="unit-salsa-block" data-pers-un="${idx}">
+                        <div class="unit-salsa-title">${titleLabel} (<span class="sum-total-counter">0</span>/${config.limit})</div>
+                        <div class="ingredients-counter-grid">${rowsHTML}</div>
+                        <div class="extras-section">
+                            <div class="extra-row-control">
+                                <span class="extra-label-text">Ingrediente Extra (+S/ 3.00)</span>
+                                <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${idx})">−</button>
+                                    <span class="qty-val qty-extra-ing">${datosViejos.ingAdic}</span>
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${idx})">+</button>
+                                </div>
+                            </div>
+                            <div class="additional-selectors-box" id="box-pers-selectores-${cardId}-${idx}"></div>
+                            <div class="extra-row-control">
+                                <span class="extra-label-text">Mozarella Extra (+S/ 6.00)</span>
+                                <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${idx})">−</button>
+                                    <span class="qty-val qty-extra-moz">${datosViejos.mozAdic}</span>
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${idx})">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                recalculatePersonalizadaIngredientsLimit(cardId, idx, config.limit);
+                renderPersonalizadaAdditionalSelectors(cardId, idx, datosViejos.ingAdic, datosViejos.selectedExtras);
+            }
+        }
+
+        function changePersonalizadaIngredientCount(btn, cardId, unitIdx, amount, ingName) {
+            const rowControls = btn.parentElement;
+            const valSpan = rowControls.querySelector('.ing-row-qty');
+            let current = parseInt(valSpan.innerText);
+
+            let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
+            let currentSum = 0;
+            block.querySelectorAll('.ing-row-qty').forEach(el => { currentSum += parseInt(el.innerText); });
+
+            const limitMax = CONFIG_PERSONALIZADAS[cardId].limit;
+            if (amount === 1 && currentSum >= limitMax) return;
+
+            current += amount;
+            if (current < 0) current = 0;
+            valSpan.innerText = current;
+
+            const parentRow = block.querySelector(`[data-p-ing-name="${cardId}-${unitIdx}-${ingName}"]`);
+            if (current > 0) parentRow.classList.add('is-selected');
+            else parentRow.classList.remove('is-selected');
+
+            recalculatePersonalizadaIngredientsLimit(cardId, unitIdx, limitMax);
+            if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
+        }
+
+        function recalculatePersonalizadaIngredientsLimit(cardId, unitIdx, limitMax) {
+            let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
+            if (!block) return;
+            let total = 0;
+            block.querySelectorAll('.ing-row-qty').forEach(el => { total += parseInt(el.innerText); });
+            block.querySelector('.sum-total-counter').innerText = total;
+            block.querySelectorAll('.btn-plus-ing').forEach(btn => { btn.disabled = (total >= limitMax); });
+        }
+
+        function changePersonalizadaExtraLive(btn, amount, cardId, unitIdx) {
+            const valSpan = btn.parentElement.querySelector('.qty-val');
+            let current = parseInt(valSpan.innerText);
+            current += amount;
+            if (current < 0) current = 0;
+            valSpan.innerText = current;
+
+            if (valSpan.classList.contains('qty-extra-ing')) {
+                renderPersonalizadaAdditionalSelectors(cardId, unitIdx, current, []);
+            }
+            if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
+        }
+
+        function renderPersonalizadaAdditionalSelectors(cardId, unitIdx, count, preselectedValues) {
+            const box = document.getElementById(`box-pers-selectores-${cardId}-${unitIdx}`);
+            if (!box) return;
+            box.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                let optionsHTML = '';
+                let val = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
+                INGREDIENTES_MAESTROS.forEach(ing => {
+                    let sel = (ing === val) ? 'selected' : '';
+                    optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`;
+                });
+                box.innerHTML += `<select class="extra-select-item" onchange="handlePersonalizadaSelectorChange('${cardId}')">${optionsHTML}</select>`;
+            }
+        }
+
+        function handlePersonalizadaSelectorChange(cardId) {
+            if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
+        }
+
+        function addPersonalizadaToCart(cardId) {
+            addedProductsRegistry[cardId] = true;
+            const btn = document.getElementById(`btn-${cardId}`);
+            if (btn) { btn.innerText = "Confirmado ✔"; btn.classList.add("is-added"); }
+            updatePersonalizadaInCart(cardId);
+        }
+
+        function updatePersonalizadaInCart(cardId) {
+            cart = cart.filter(item => item.parentCardId !== cardId);
+            const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+            const blocks = container.querySelectorAll('[data-pers-un]');
+            const config = CONFIG_PERSONALIZADAS[cardId];
+            const globalQty = productQuantities[cardId] || 1;
+
+            blocks.forEach(block => {
+                const indexUnidad = block.getAttribute('data-pers-un');
+                let ingLineas = [];
+                block.querySelectorAll('.ing-row-qty').forEach(el => {
+                    let count = parseInt(el.innerText);
+                    if (count > 0) ingLineas.push(count === 1 ? el.getAttribute('data-ing') : `${el.getAttribute('data-ing')} (x${count})`);
+                });
+                let txtIngs = ingLineas.length > 0 ? ingLineas.join(', ') : 'Solo Queso y Salsa';
+
+                const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
+                const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                let totalExtrasCost = (ingAdic * 3.00) + (mozAdic * 6.00);
+
+                let extrasList = [];
+                block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
+
+                let finalLabelText = config.name;
+                if (globalQty > 1) finalLabelText += ` (Unidad #${indexUnidad})`;
+
+                let buildOptionsText = `Base: [${txtIngs}]`;
+                if (ingAdic > 0) buildOptionsText += ` (+ Extras: ${extrasList.join(', ')})`;
+                if (mozAdic > 0) buildOptionsText += ` (+${mozAdic} Mozarella Extra)`;
+
+                cart.push({
+                    uniqueId: `${cardId}-u${indexUnidad}`,
+                    parentCardId: cardId,
+                    name: finalLabelText,
+                    price: config.price + totalExtrasCost,
+                    qty: 1,
+                    optionsText: buildOptionsText,
+                    type: 'armada'
+                });
             });
 
-            let stringIngredientes = arrayLineas.length > 0 ? arrayLineas.join(', ') : 'Solo Queso y Salsa';
+            renderCart();
+        }
 
-            const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
-            const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-            const panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
+        function clearPersonalizadaCard(cardId) {
+            cart = cart.filter(item => item.parentCardId !== cardId);
+            delete addedProductsRegistry[cardId];
+            const btn = document.getElementById(`btn-${cardId}`);
+            if (btn) { btn.innerText = "Confirmar"; btn.classList.remove("is-added"); }
+            productQuantities[cardId] = 1;
+            document.getElementById(`${cardId}-qty`).innerText = 1;
+            generateDynamicPersonalizadaBlocks(cardId);
+            renderCart();
+        }
 
-            let extrasElegidosList = [];
-            block.querySelectorAll('.extra-select-item').forEach(selectEl => {
-                extrasElegidosList.push(selectEl.value);
-            });
+        /* --- CONTROL CATEGORÍA: PROMOS --- */
+        function changeQtyPromo(cardId, amount) {
+            if (!productQuantities[cardId]) productQuantities[cardId] = 1;
+            productQuantities[cardId] += amount;
+            if (productQuantities[cardId] < 1) productQuantities[cardId] = 1;
 
-            let finalPrice = baseConfig.price + (ingAdic * 3.00) + (mozAdic * 6.00) + (panAdic * 9.00);
+            document.getElementById(`${cardId}-qty`).innerText = productQuantities[cardId];
+            generateDynamicPromoBlocks(cardId);
             
-            let descLineas = `Ingredientes: ${stringIngredientes}`;
-            if (ingAdic > 0) descLineas += ` / Extra Ings: [${extrasElegidosList.join(', ')}]`;
-            if (mozAdic > 0) descLineas += ` / +${mozAdic} Mozarella Extra`;
-            if (panAdic > 0) descLineas += ` / +${panAdic} Pan al Ajo Esp.`;
+            if (addedProductsRegistry[cardId]) {
+                updatePromoInCart(cardId);
+            }
+        }
 
-            let globalQty = productQuantities[cardId] || 1;
-            let displayTitle = (globalQty === 1) ? baseConfig.name : `${baseConfig.name} (#${indexUnidad})`;
+        function generateDynamicPromoBlocks(cardId) {
+            const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+            if (!container) return;
+
+            const globalComboQty = productQuantities[cardId] || 1;
+            const promoConfig = CONFIG_PROMOS[cardId];
+            
+            let pasadasSelecciones = [];
+            for(let u=1; u <= 40; u++) {
+                let block = container.querySelector(`[data-promo-un="${u}"]`);
+                if(block) {
+                    let mapIng = {};
+                    block.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
+                    let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
+                    let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                    let selectedExtras = [];
+                    block.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
+                    pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
+                }
+            }
+
+            container.innerHTML = '';
+            let correlativoSubUnidad = 1;
+
+            for (let packIdx = 1; packIdx <= globalComboQty; packIdx++) {
+                let subtituloGroup = globalComboQty > 1 ? `<div style="font-size:0.85rem; color:var(--accent-gold); font-weight:700; margin:10px 0 5px 0; text-transform:uppercase;">📦 COMBO PROMO CONJUNTO #${packIdx}</div>` : '';
+                container.innerHTML += subtituloGroup;
+
+                for (let pNum = 1; pNum <= promoConfig.pizzasCount; pNum++) {
+                    let datosViejos = pasadasSelecciones[correlativoSubUnidad] || { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+                    let titleLabel = `ELIGE LOS INGREDIENTES DE TU PIZZA ${correlativoSubUnidad} (${promoConfig.labelSizes})`;
+
+                    let rowsHTML = '';
+                    INGREDIENTES_MAESTROS.forEach(ing => {
+                        let count = datosViejos.mapIng[ing] || 0;
+                        let highlightClass = count > 0 ? 'is-selected' : '';
+                        rowsHTML += `
+                            <div class="ing-counter-row ${highlightClass}" data-p-ing-name="${cardId}-${correlativoSubUnidad}-${ing}">
+                                <span class="ing-name-text">${ing}</span>
+                                <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoIngredientCount(this, '${cardId}', ${correlativoSubUnidad}, -1, '${ing}')">−</button>
+                                    <span class="qty-val ing-row-qty" data-ing="${ing}" style="font-size:0.8rem;">${count}</span>
+                                    <button class="qty-btn btn-plus-ing" style="font-size:0.9rem;" onclick="changePromoIngredientCount(this, '${cardId}', ${correlativoSubUnidad}, 1, '${ing}')">+</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    container.innerHTML += `
+                        <div class="unit-salsa-block" data-promo-un="${correlativoSubUnidad}" style="margin-bottom:12px;">
+                            <div class="unit-salsa-title">
+                                ${titleLabel} (<span class="sum-total-counter">0</span>/${promoConfig.limitEach})
+                            </div>
+                            <div class="ingredients-counter-grid">${rowsHTML}</div>
+                            <div class="extras-section">
+                                <div class="extra-row-control">
+                                    <span class="extra-label-text">Ingrediente Extra (+S/ 3.00)</span>
+                                    <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, -1, '${cardId}', ${correlativoSubUnidad})">−</button>
+                                        <span class="qty-val qty-extra-ing">${datosViejos.ingAdic}</span>
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, 1, '${cardId}', ${correlativoSubUnidad})">+</button>
+                                    </div>
+                                </div>
+                                <div class="additional-selectors-box" id="box-promo-selectores-${cardId}-${correlativoSubUnidad}"></div>
+                                <div class="extra-row-control">
+                                    <span class="extra-label-text">Mozarella Extra (+S/ 6.00)</span>
+                                    <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, -1, '${cardId}', ${correlativoSubUnidad})">−</button>
+                                        <span class="qty-val qty-extra-moz">${datosViejos.mozAdic}</span>
+                                        <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, 1, '${cardId}', ${correlativoSubUnidad})">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    recalculatePromoIngredientsLimit(cardId, correlativoSubUnidad, promoConfig.limitEach);
+                    renderPromoAdditionalSelectors(cardId, correlativoSubUnidad, datosViejos.ingAdic, datosViejos.selectedExtras);
+                    
+                    correlativoSubUnidad++;
+                }
+            }
+        }
+
+        function changePromoIngredientCount(btn, cardId, subUnitIdx, amount, ingName) {
+            const rowControls = btn.parentElement;
+            const valSpan = rowControls.querySelector('.ing-row-qty');
+            let current = parseInt(valSpan.innerText);
+            
+            let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-promo-un="${subUnitIdx}"]`);
+            let currentSum = 0;
+            block.querySelectorAll('.ing-row-qty').forEach(el => { currentSum += parseInt(el.innerText); });
+            
+            const limitMax = CONFIG_PROMOS[cardId].limitEach;
+            if (amount === 1 && currentSum >= limitMax) return;
+
+            current += amount;
+            if (current < 0) current = 0;
+            valSpan.innerText = current;
+
+            const parentRow = block.querySelector(`[data-p-ing-name="${cardId}-${subUnitIdx}-${ingName}"]`);
+            if (current > 0) parentRow.classList.add('is-selected');
+            else parentRow.classList.remove('is-selected');
+
+            recalculatePromoIngredientsLimit(cardId, subUnitIdx, limitMax);
+            if (addedProductsRegistry[cardId]) updatePromoInCart(cardId);
+        }
+
+        function recalculatePromoIngredientsLimit(cardId, subUnitIdx, limitMax) {
+            let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-promo-un="${subUnitIdx}"]`);
+            if (!block) return;
+            let total = 0;
+            block.querySelectorAll('.ing-row-qty').forEach(el => { total += parseInt(el.innerText); });
+            block.querySelector('.sum-total-counter').innerText = total;
+            block.querySelectorAll('.btn-plus-ing').forEach(btn => { btn.disabled = (total >= limitMax); });
+        }
+
+        function changePromoExtraLive(btn, amount, cardId, subUnitIdx) {
+            const valSpan = btn.parentElement.querySelector('.qty-val');
+            let current = parseInt(valSpan.innerText);
+            current += amount;
+            if (current < 0) current = 0;
+            valSpan.innerText = current;
+
+            if (valSpan.classList.contains('qty-extra-ing')) {
+                renderPromoAdditionalSelectors(cardId, subUnitIdx, current, []);
+            }
+            if (addedProductsRegistry[cardId]) updatePromoInCart(cardId);
+        }
+
+        function renderPromoAdditionalSelectors(cardId, subUnitIdx, count, preselectedValues) {
+            const box = document.getElementById(`box-promo-selectores-${cardId}-${subUnitIdx}`);
+            if (!box) return;
+            box.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                let optionsHTML = '';
+                let val = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
+                INGREDIENTES_MAESTROS.forEach(ing => {
+                    let sel = (ing === val) ? 'selected' : '';
+                    optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`;
+                });
+                box.innerHTML += `<select class="extra-select-item" onchange="handlePromoSelectorChange('${cardId}')">${optionsHTML}</select>`;
+            }
+        }
+
+        function handlePromoSelectorChange(cardId) {
+            if (addedProductsRegistry[cardId]) updatePromoInCart(cardId);
+        }
+
+        function addPromoToCart(cardId) {
+            addedProductsRegistry[cardId] = true;
+            const btn = document.getElementById(`btn-${cardId}`);
+            if(btn) { btn.innerText = "Promo Confirmada ✔"; btn.classList.add("is-added"); }
+            updatePromoInCart(cardId);
+        }
+
+        function updatePromoInCart(cardId) {
+            cart = cart.filter(item => item.parentCardId !== cardId);
+            const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+            const blocks = container.querySelectorAll('[data-promo-un]');
+            const promoConfig = CONFIG_PROMOS[cardId];
+            const comboQty = productQuantities[cardId] || 1;
+
+            let resumenPizzasPromoArr = [];
+            let totalExtrasCost = 0;
+
+            blocks.forEach(block => {
+                const indexUnidad = block.getAttribute('data-promo-un');
+                let ingLineas = [];
+                block.querySelectorAll('.ing-row-qty').forEach(el => {
+                    let count = parseInt(el.innerText);
+                    if (count > 0) ingLineas.push(count === 1 ? el.getAttribute('data-ing') : `${el.getAttribute('data-ing')} (x${count})`);
+                });
+                let txtIngs = ingLineas.length > 0 ? ingLineas.join(', ') : 'Solo Queso y Salsa';
+
+                const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
+                const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                totalExtrasCost += (ingAdic * 3.00) + (mozAdic * 6.00);
+
+                let extrasList = [];
+                block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
+
+                let buildStr = `Pizza #${indexUnidad}: [${txtIngs}]`;
+                if (ingAdic > 0) buildStr += ` (+ Extras: ${extrasList.join(', ')})`;
+                if (mozAdic > 0) buildStr += ` (+${mozAdic} Mozarella Extra)`;
+                
+                resumenPizzasPromoArr.push(buildStr);
+            });
+
+            let finalPackCost = promoConfig.price + totalExtrasCost;
 
             cart.push({
-                uniqueId: `${cardId}-u${indexUnidad}`,
+                uniqueId: cardId,
                 parentCardId: cardId,
-                name: displayTitle,
-                price: finalPrice,
-                qty: 1,
-                optionsText: descLineas,
-                type: 'armada'
+                name: promoConfig.name,
+                price: finalPackCost,
+                qty: comboQty,
+                optionsText: resumenPizzasPromoArr.join(' \n   '),
+                type: 'promo'
             });
-        });
 
-        renderCart();
-    }
-
-    function clearPersonalizadaCard(cardId) {
-        cart = cart.filter(item => item.parentCardId !== cardId);
-        delete addedProductsRegistry[cardId];
-
-        const btn = document.getElementById(`btn-${cardId}`);
-        if(btn) {
-            btn.innerText = "Confirmar";
-            btn.classList.remove("is-added");
+            renderCart();
         }
 
-        productQuantities[cardId] = 1;
-        document.getElementById(`${cardId}-qty`).innerText = 1;
-        deleteHighlightOnReset(cardId);
-        generateDynamicIngredientBlocks(cardId);
-        renderCart();
-    }
-
-
-    /* --- LÓGICA: TRADICIONALES --- */
-    function changeQtyTrad(pizzaId, size, amount) {
-        let key = `${pizzaId}-${size}`;
-        if (!productQuantities[key]) productQuantities[key] = 1;
-        productQuantities[key] += amount;
-        if (productQuantities[key] < 1) productQuantities[key] = 1;
-
-        document.getElementById(`qty-${pizzaId}-${size}`).innerText = productQuantities[key];
-        generateTradExtrasBlock(pizzaId, size);
-
-        if (addedProductsRegistry[key]) {
-            updateTradInCart(pizzaId, size);
-        }
-    }
-
-    function generateTradExtrasBlock(pizzaId, size) {
-        const container = document.getElementById(`extras-trad-${pizzaId}-${size}`);
-        if (!container) return;
-
-        if (container.children.length === 0) {
-            container.innerHTML = `
-                <div class="extras-section" style="margin-top:5px;">
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
-                            <span class="qty-val extra-t-ing">0</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
-                        </div>
-                    </div>
-                    
-                    <div class="additional-selectors-box" id="box-selectores-trad-extras-${pizzaId}-${size}"></div>
-
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
-                            <span class="qty-val extra-t-moz">0</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
-                        </div>
-                    </div>
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Pan al Ajo Especial (+S/ 9.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
-                            <span class="qty-val extra-t-pan">0</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    function changeTradExtraLive(btn, amount, pizzaId, size) {
-        const valSpan = btn.parentElement.querySelector('.qty-val');
-        let current = parseInt(valSpan.innerText);
-        current += amount;
-        if (current < 0) current = 0;
-        valSpan.innerText = current;
-
-        if (valSpan.classList.contains('extra-t-ing')) {
-            renderTradAdditionalSelectors(pizzaId, size, current);
+        function clearPromoCard(cardId) {
+            cart = cart.filter(item => item.parentCardId !== cardId);
+            delete addedProductsRegistry[cardId];
+            const btn = document.getElementById(`btn-${cardId}`);
+            if(btn) { btn.innerText = "Confirmar Promo"; btn.classList.remove("is-added"); }
+            productQuantities[cardId] = 1;
+            document.getElementById(`${cardId}-qty`).innerText = 1;
+            generateDynamicPromoBlocks(cardId);
+            renderCart();
         }
 
-        let key = `${pizzaId}-${size}`;
-        if (addedProductsRegistry[key]) {
-            updateTradInCart(pizzaId, size);
-        }
-    }
+        /* --- CONTROL CATEGORÍA: PIZZAS TRADICIONALES --- */
+        function changeQtyTrad(id, size, amount) {
+            let key = `${id}-${size}`;
+            if (!productQuantities[key]) productQuantities[key] = 1;
+            productQuantities[key] += amount;
+            if (productQuantities[key] < 1) productQuantities[key] = 1;
 
-    function renderTradAdditionalSelectors(pizzaId, size, count) {
-        const box = document.getElementById(`box-selectores-trad-extras-${pizzaId}-${size}`);
-        if (!box) return;
-        box.innerHTML = '';
-
-        for(let i=0; i < count; i++) {
-            let optionsHTML = '';
-            INGREDIENTES_MAESTROS.forEach(ing => {
-                optionsHTML += `<option value="${ing}">${ing}</option>`;
-            });
-            box.innerHTML += `
-                <select class="extra-select-item" onchange="handleTradSelectorChange('${pizzaId}', '${size}')">
-                    ${optionsHTML}
-                </select>
-            `;
-        }
-    }
-
-    function handleTradSelectorChange(pizzaId, size) {
-        let key = `${pizzaId}-${size}`;
-        if (addedProductsRegistry[key]) {
-            updateTradInCart(pizzaId, size);
-        }
-    }
-
-    function addTradToCart(pizzaId, pizzaName, sizeLabel, basePrice) {
-        let key = `${pizzaId}-${sizeLabel.toLowerCase()}`;
-        addedProductsRegistry[key] = true;
-
-        const btn = document.getElementById(`btn-${pizzaId}-${sizeLabel.toLowerCase()}`);
-        if(btn) {
-            btn.innerText = "Agregado ✔";
-            btn.classList.add("is-added");
-        }
-        updateTradInCart(pizzaId, sizeLabel.toLowerCase());
-    }
-
-    function updateTradInCart(pizzaId, size) {
-        let key = `${pizzaId}-${size}`;
-        cart = cart.filter(item => item.uniqueId !== key);
-
-        const qty = productQuantities[key] || 1;
-        const container = document.getElementById(`extras-trad-${pizzaId}-${size}`);
-        
-        let ingAdic = 0, mozAdic = 0, panAdic = 0;
-        let extrasElegidosList = [];
-        if (container) {
-            ingAdic = parseInt(container.querySelector('.extra-t-ing')?.innerText || "0");
-            mozAdic = parseInt(container.querySelector('.extra-t-moz')?.innerText || "0");
-            panAdic = parseInt(container.querySelector('.extra-t-pan')?.innerText || "0");
-            
-            container.querySelectorAll('.extra-select-item').forEach(sel => {
-                extrasElegidosList.push(sel.value);
-            });
+            document.getElementById(`qty-${id}-${size}`).innerText = productQuantities[key];
+            generateDynamicTradBlocks(id, size);
+            if (addedProductsRegistry[key]) updateTradInCart(id, size);
         }
 
-        let basePrice = size === 'grande' ? 25.00 : 35.00;
-        let priceWithExtras = basePrice + (ingAdic * 3.00) + (mozAdic * 6.00) + (panAdic * 9.00);
+        function generateDynamicTradBlocks(id, size) {
+            const container = document.getElementById(`extras-trad-${id}-${size}`);
+            if (!container) return;
 
-        let extrasTextArr = [];
-        if (ingAdic > 0) extrasTextArr.push(`Extra Ings: [${extrasElegidosList.join(', ')}]`);
-        if (mozAdic > 0) extrasTextArr.push(`+${mozAdic} Mozarella Extra`);
-        if (panAdic > 0) extrasTextArr.push(`+${panAdic} Pan al Ajo Esp.`);
-        let optionsText = extrasTextArr.length > 0 ? extrasTextArr.join(' / ') : '';
+            let key = `${id}-${size}`;
+            const globalQty = productQuantities[key] || 1;
 
-        let nameMaestro = TRADICIONALES_MAESTRAS.find(t => t.id === pizzaId).name;
-
-        cart.push({
-            uniqueId: key,
-            parentCardId: 'tradicionales',
-            name: `Pizza ${nameMaestro} (${size.toUpperCase()})`,
-            price: priceWithExtras,
-            qty: qty,
-            optionsText: optionsText,
-            type: 'tradicional'
-        });
-
-        renderCart();
-    }
-
-    function clearTradCard(pizzaId, size) {
-        let key = `${pizzaId}-${size}`;
-        cart = cart.filter(item => item.uniqueId !== key);
-        delete addedProductsRegistry[key];
-
-        const btn = document.getElementById(`btn-${pizzaId}-${size}`);
-        if (btn) {
-            btn.innerText = "Agregar";
-            btn.classList.remove("is-added");
-        }
-
-        productQuantities[key] = 1;
-        document.getElementById(`qty-${pizzaId}-${size}`).innerText = 1;
-
-        const container = document.getElementById(`extras-trad-${pizzaId}-${size}`);
-        if (container) container.innerHTML = '';
-        
-        generateTradExtrasBlock(pizzaId, size);
-        renderCart();
-    }
-
-
-    /* --- LÓGICA: PRODUCTOS SIMPLES --- */
-    function changeSimpleQty(cardId, amount) {
-        if (!productQuantities[cardId]) productQuantities[cardId] = 1;
-        productQuantities[cardId] += amount;
-        if (productQuantities[cardId] < 1) productQuantities[cardId] = 1;
-
-        document.getElementById(`${cardId}-qty`).innerText = productQuantities[cardId];
-
-        if (addedProductsRegistry[cardId]) {
-            let item = cart.find(i => i.uniqueId === cardId);
-            if (item) {
-                item.qty = productQuantities[cardId];
-                renderCart();
-            }
-        }
-    }
-
-    function addSimpleToCart(cardId, pName, price) {
-        addedProductsRegistry[cardId] = true;
-        const btn = document.getElementById(`btn-${cardId}`);
-        if(btn) {
-            btn.innerText = "Agregado ✔";
-            btn.classList.add("is-added");
-        }
-
-        cart = cart.filter(i => i.uniqueId !== cardId);
-        let qty = productQuantities[cardId] || 1;
-
-        cart.push({
-            uniqueId: cardId,
-            parentCardId: cardId,
-            name: pName,
-            price: price,
-            qty: qty,
-            optionsText: '',
-            type: 'simple'
-        });
-
-        renderCart();
-    }
-
-    function clearSimpleCard(cardId) {
-        cart = cart.filter(i => i.uniqueId !== cardId);
-        delete addedProductsRegistry[cardId];
-
-        const btn = document.getElementById(`btn-${cardId}`);
-        if(btn) {
-            btn.innerText = "Agregar";
-            btn.classList.remove("is-added");
-        }
-
-        productQuantities[cardId] = 1;
-        document.getElementById(`${cardId}-qty`).innerText = 1;
-        renderCart();
-    }
-
-
-    /* --- RENDER CARRITO GLOBAL --- */
-    function renderCart() {
-        const container = document.getElementById('cart-items-container');
-        const deliverySelect = document.getElementById('delivery-zone');
-        
-        if (cart.length === 0) {
-            container.innerHTML = '<div class="cart-empty">Aún no has agregado productos</div>';
-            document.getElementById('total-val').innerText = parseFloat(deliverySelect.value).toFixed(2);
-            return;
-        }
-
-        container.innerHTML = '';
-        let subtotal = 0;
-
-        cart.forEach((item, index) => {
-            let itemCost = item.price * item.qty;
-            subtotal += itemCost;
-
-            let detailsHTML = item.optionsText ? `<span class="cart-item-salsas">${item.optionsText}</span>` : '';
-
-            container.innerHTML += `
-                <div class="cart-item-row">
-                    <div>
-                        <strong>${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name}</strong>
-                        ${detailsHTML}
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        S/ ${itemCost.toFixed(2)}
-                        <span style="color:var(--accent-red); cursor:pointer; font-weight:bold; font-size:1.2rem; padding: 0 5px;" onclick="removeItemFromSummary(${index})">×</span>
-                    </div>
-                </div>
-            `;
-        });
-
-        let deliveryCost = parseFloat(deliverySelect.value);
-        let selectedZoneName = deliverySelect.options[deliverySelect.selectedIndex].getAttribute('data-name');
-        
-        document.getElementById('summary-deliv-label').innerText = `Delivery (${selectedZoneName})`;
-        document.getElementById('summary-deliv-price').innerText = `S/ ${deliveryCost.toFixed(2)}`;
-        
-        let total = subtotal + deliveryCost;
-        document.getElementById('total-val').innerText = total.toFixed(2);
-    }
-
-    function removeItemFromSummary(index) {
-        let itemObjeto = cart[index];
-        cart.splice(index, 1);
-        renderCart();
-
-        let parentStillInCart = cart.some(i => i.parentCardId === itemObjeto.parentCardId || i.uniqueId === itemObjeto.uniqueId);
-        
-        if (!parentStillInCart) {
-            let pCardId = itemObjeto.parentCardId;
-            if (CONFIG_PERSONALIZADAS[pCardId]) {
-                clearPersonalizadaCard(pCardId);
-            } else if (pCardId === 'tradicionales') {
-                let parts = itemObjeto.uniqueId.split('-');
-                clearTradCard(parts[0], parts[1]);
-            } else {
-                clearSimpleCard(itemObjeto.uniqueId);
-            }
-        }
-    }
-
-    function selectPayment(element, method) {
-        document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-        element.classList.add('selected');
-        selectedPayment = method;
-
-        const cashBox = document.getElementById('cash-change-box');
-        if (method === "Efectivo") {
-            cashBox.style.display = 'block';
-        } else {
-            cashBox.style.display = 'none';
-            document.getElementById('cash-amount').value = '';
-        }
-    }
-
-    function handleDeliveryZoneChange() {
-        const select = document.getElementById('delivery-zone');
-        const selectedZoneName = select.options[select.selectedIndex].getAttribute('data-name');
-        
-        const wrapperAddress = document.getElementById('wrapper-address');
-        const wrapperReference = document.getElementById('wrapper-reference');
-        
-        if (selectedZoneName === "Recojo en Local") {
-            wrapperAddress.style.display = 'none';
-            wrapperReference.style.display = 'none';
-            document.getElementById('client-address').value = '';
-            document.getElementById('client-reference').value = '';
-        } else {
-            wrapperAddress.style.display = 'block';
-            wrapperReference.style.display = 'block';
-        }
-        renderCart();
-    }
-
-    /* --- PROCESAR FLUJO: MODO DEMO PREVIEW --- */
-    function processOrderFlow() {
-        const name = document.getElementById('client-name').value.trim();
-        const phone = document.getElementById('client-phone').value.trim();
-        const address = document.getElementById('client-address').value.trim();
-        const reference = document.getElementById('client-reference').value.trim();
-        let notes = document.getElementById('client-notes').value.trim();
-        const deliverySelect = document.getElementById('delivery-zone');
-        const zoneText = deliverySelect.options[deliverySelect.selectedIndex].getAttribute('data-name');
-        const cashAmount = document.getElementById('cash-amount').value.trim();
-
-        if(cart.length === 0) {
-            alert("El resumen de tu pedido está vacío.");
-            return;
-        }
-        if(!name) {
-            alert("Por favor, ingresa tu Nombre Completo.");
-            return;
-        }
-        if(phone.length !== 9) {
-            alert("El número de celular debe tener 9 dígitos.");
-            return;
-        }
-        if(zoneText !== "Recojo en Local" && !address) {
-            alert("Por favor, ingresa la dirección de entrega.");
-            return;
-        }
-
-        if (selectedPayment === "Efectivo") {
-            if (cashAmount) {
-                const totalPedido = parseFloat(document.getElementById('total-val').innerText);
-                if (parseFloat(cashAmount) < totalPedido) {
-                    alert(`El monto de pago no puede ser menor al total del pedido.`);
-                    return;
+            let pasadasSelecciones = [];
+            for (let u = 1; u <= 20; u++) {
+                let block = container.querySelector(`[data-trad-un="${u}"]`);
+                if (block) {
+                    let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
+                    let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                    let selectedExtras = [];
+                    block.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
+                    pasadasSelecciones[u] = { ingAdic, mozAdic, selectedExtras };
                 }
-                const vuelto = parseFloat(cashAmount) - totalPedido;
-                notes = `[PAGA CON: S/ ${cashAmount} - LLEVAR VUELTO DE: S/ ${vuelto.toFixed(2)}] ${notes ? '\n' + notes : ''}`;
-            } else {
-                notes = `[PAGA CON EFECTIVO - REQUIERE CAMBIO] ${notes ? '\n' + notes : ''}`;
+            }
+
+            container.innerHTML = '';
+
+            for (let idx = 1; idx <= globalQty; idx++) {
+                let datosViejos = pasadasSelecciones[idx] || { ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+                let labelExtraTitle = globalQty > 1 ? `EXTRAS PARA LA UNIDAD #${idx}` : `AÑADIR EXTRAS A TU PIZZA`;
+
+                container.innerHTML += `
+                    <div class="unit-salsa-block" data-trad-un="${idx}" style="margin-top:8px; padding:8px;">
+                        <div class="unit-salsa-title" style="margin-bottom:4px; font-size:0.7rem; color:#A45F00;">${labelExtraTitle}</div>
+                        <div class="extra-row-control">
+                            <span class="extra-label-text" style="font-size:0.7rem;">Ingrediente Extra (+S/ 3.00)</span>
+                            <div class="quantity-control" style="padding:2px 6px; gap:6px;">
+                                <button class="qty-btn" style="font-size:0.8rem;" onclick="changeTradExtraLive(this, -1, '${id}', '${size}', ${idx})">−</button>
+                                <span class="qty-val qty-extra-ing" style="font-size:0.75rem;">${datosViejos.ingAdic}</span>
+                                <button class="qty-btn" style="font-size:0.8rem;" onclick="changeTradExtraLive(this, 1, '${id}', '${size}', ${idx})">+</button>
+                            </div>
+                        </div>
+                        <div class="additional-selectors-box" id="box-trad-selectores-${id}-${size}-${idx}"></div>
+                        <div class="extra-row-control">
+                            <span class="extra-label-text" style="font-size:0.7rem;">Mozarella Extra (+S/ 6.00)</span>
+                            <div class="quantity-control" style="padding:2px 6px; gap:6px;">
+                                <button class="qty-btn" style="font-size:0.8rem;" onclick="changeTradExtraLive(this, -1, '${id}', '${size}', ${idx})">−</button>
+                                <span class="qty-val qty-extra-moz" style="font-size:0.75rem;">${datosViejos.mozAdic}</span>
+                                <button class="qty-btn" style="font-size:0.8rem;" onclick="changeTradExtraLive(this, 1, '${id}', '${size}', ${idx})">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                renderTradAdditionalSelectors(id, size, idx, datosViejos.ingAdic, datosViejos.selectedExtras);
             }
         }
 
-        let resumenProductos = "";
-        cart.forEach(item => {
-            resumenProductos += `* ${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name} (S/ ${(item.price * item.qty).toFixed(2)})\n`;
-            if (item.optionsText) {
-                resumenProductos += `   └ _${item.optionsText}_\n`;
+        function changeTradExtraLive(btn, amount, id, size, unitIdx) {
+            const valSpan = btn.parentElement.querySelector('.qty-val');
+            let current = parseInt(valSpan.innerText);
+            current += amount;
+            if (current < 0) current = 0;
+            valSpan.innerText = current;
+
+            if (valSpan.classList.contains('qty-extra-ing')) {
+                renderTradAdditionalSelectors(id, size, unitIdx, current, []);
             }
+            let key = `${id}-${size}`;
+            if (addedProductsRegistry[key]) updateTradInCart(id, size);
+        }
+
+        function renderTradAdditionalSelectors(id, size, unitIdx, count, preselectedValues) {
+            const box = document.getElementById(`box-trad-selectores-${id}-${size}-${unitIdx}`);
+            if (!box) return;
+            box.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                let optionsHTML = '';
+                let val = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
+                INGREDIENTES_MAESTROS.forEach(ing => {
+                    let sel = (ing === val) ? 'selected' : '';
+                    optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`;
+                });
+                box.innerHTML += `<select class="extra-select-item" onchange="handleTradSelectorChange('${id}','${size}')">${optionsHTML}</select>`;
+            }
+        }
+
+        function handleTradSelectorChange(id, size) {
+            let key = `${id}-${size}`;
+            if (addedProductsRegistry[key]) updateTradInCart(id, size);
+        }
+
+        function addTradToCart(id, baseName, sizeLabel, basePrice) {
+            let key = `${id}-${sizeLabel.toLowerCase()}`;
+            addedProductsRegistry[key] = true;
+            const btn = document.getElementById(`btn-${id}-${sizeLabel.toLowerCase()}`);
+            if (btn) { btn.innerText = "Agregado ✔"; btn.classList.add("is-added"); }
+            updateTradInCart(id, sizeLabel.toLowerCase());
+        }
+
+        function updateTradInCart(id, size) {
+            let key = `${id}-${size}`;
+            cart = cart.filter(item => item.uniqueId !== key && item.parentCardId !== key);
+
+            const container = document.getElementById(`extras-trad-${id}-${size}`);
+            const blocks = container.querySelectorAll('[data-trad-un]');
+            const globalQty = productQuantities[key] || 1;
+            
+            let maestroObj = TRADICIONALES_MAESTRAS.find(t => t.id === id);
+            let basePrice = size === 'grande' ? 25.00 : 35.00;
+            let sizeLabel = size === 'grande' ? 'Grande' : 'Familiar';
+
+            blocks.forEach(block => {
+                const indexUnidad = block.getAttribute('data-trad-un');
+                const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
+                const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                let totalExtrasCost = (ingAdic * 3.00) + (mozAdic * 6.00);
+
+                let extrasList = [];
+                block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
+
+                let finalLabelText = `Pizza Tradicional: ${maestroObj.name} (${sizeLabel})`;
+                if (globalQty > 1) finalLabelText += ` (Unidad #${indexUnidad})`;
+
+                let buildOptionsText = `Receta Tradicional`;
+                if (ingAdic > 0) buildOptionsText += ` (+ Extras: ${extrasList.join(', ')})`;
+                if (mozAdic > 0) buildOptionsText += ` (+${mozAdic} Mozarella Extra)`;
+
+                cart.push({
+                    uniqueId: `${key}-u${indexUnidad}`,
+                    parentCardId: key,
+                    name: finalLabelText,
+                    price: basePrice + totalExtrasCost,
+                    qty: 1,
+                    optionsText: buildOptionsText,
+                    type: 'tradicional'
+                });
+            });
+
+            renderCart();
+        }
+
+        function clearTradCard(id, size) {
+            let key = `${id}-${size}`;
+            cart = cart.filter(item => item.parentCardId !== key && item.uniqueId !== key);
+            delete addedProductsRegistry[key];
+            const btn = document.getElementById(`btn-${id}-${size}`);
+            if (btn) { btn.innerText = "Agregar"; btn.classList.remove("is-added"); }
+            productQuantities[key] = 1;
+            document.getElementById(`qty-${id}-${size}`).innerText = 1;
+            generateDynamicTradBlocks(id, size);
+            renderCart();
+        }
+
+        /* --- CONTROL CATEGORÍAS SIMPLE: PASTAS / BEBIDAS --- */
+        function changeSimpleQty(cardId, amount) {
+            if (!productQuantities[cardId]) productQuantities[cardId] = 1;
+            productQuantities[cardId] += amount;
+            if (productQuantities[cardId] < 1) productQuantities[cardId] = 1;
+
+            document.getElementById(`${cardId}-qty`).innerText = productQuantities[cardId];
+            if (addedProductsRegistry[cardId]) updateSimpleInCart(cardId);
+        }
+
+        function addSimpleToCart(cardId, name, price) {
+            addedProductsRegistry[cardId] = true;
+            const btn = document.getElementById(`btn-${cardId}`);
+            if (btn) { btn.innerText = "Añadido ✔"; btn.classList.add("is-added"); }
+            updateSimpleInCart(cardId);
+        }
+
+        function updateSimpleInCart(cardId) {
+            cart = cart.filter(item => item.uniqueId !== cardId);
+            const globalQty = productQuantities[cardId] || 1;
+
+            let finalPrice = 6.00;
+            let finalName = "Pepsi 600 ml";
+            if (cardId.includes('lasagna')) { finalPrice = 25.00; finalName = "Lasagna"; }
+
+            cart.push({
+                uniqueId: cardId,
+                parentCardId: cardId,
+                name: finalName,
+                price: finalPrice,
+                qty: globalQty,
+                optionsText: 'Listo para servir',
+                type: 'simple'
+            });
+
+            renderCart();
+        }
+
+        function clearSimpleCard(cardId) {
+            cart = cart.filter(item => item.uniqueId !== cardId);
+            delete addedProductsRegistry[cardId];
+            const btn = document.getElementById(`btn-${cardId}`);
+            if (btn) { btn.innerText = "Agregar"; btn.classList.remove("is-added"); }
+            productQuantities[cardId] = 1;
+            document.getElementById(`${cardId}-qty`).innerText = 1;
+            renderCart();
+        }
+
+        /* --- LOGICA CORE DE CARRITO Y RENDER --- */
+        function renderCart() {
+            let totalGeneral = 0;
+            cart.forEach(item => {
+                totalGeneral += (item.price * item.qty);
+            });
+            document.getElementById('sticky-total-val').innerText = `S/ ${totalGeneral.toFixed(2)}`;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPayment = method;
+            document.querySelectorAll('.pay-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(`pay-${method}`).classList.add('active');
+
+            const cashGroup = document.getElementById('group-change-cash');
+            if (method === "Efectivo") cashGroup.style.display = "block";
+            else cashGroup.style.display = "none";
+        }
+
+        function processOrderRouting() {
+            const name = document.getElementById('client-name').value.trim();
+            const address = document.getElementById('client-address').value.trim();
+
+            if (cart.length === 0) {
+                alert("Tu carrito está vacío. Agrega o confirma algún producto.");
+                return;
+            }
+            if (!name || !address) {
+                alert("Por favor completa tu nombre y la dirección de entrega.");
+                return;
+            }
+
+            let totalCalculado = 0;
+            let outputText = `🍕 *NUEVO PEDIDO - PIZZERÍA PULCINELLA* 🍕\n\n`;
+            outputText += `👤 *Cliente:* ${name}\n`;
+            outputText += `📍 *Entrega:* ${address}\n`;
+            outputText += `💳 *Método de Pago:* ${selectedPayment}\n`;
+            
+            if (selectedPayment === "Efectivo") {
+                const cashVal = document.getElementById('client-cash-change').value.trim();
+                if (cashVal) outputText += `💵 *Paga con:* ${cashVal}\n`;
+            }
+            outputText += `---------------------------------------\n\n`;
+
+            cart.forEach((item, i) => {
+                let subtotal = item.price * item.qty;
+                totalCalculado += subtotal;
+                outputText += `${i + 1}. *${item.qty}x ${item.name}*\n`;
+                outputText += `   _${item.optionsText}_\n`;
+                outputText += `   *Subtotal:* S/ ${subtotal.toFixed(2)}\n\n`;
+            });
+
+            outputText += `---------------------------------------\n`;
+            outputText += `💰 *TOTAL A PAGAR:* S/ ${totalCalculado.toFixed(2)}`;
+
+            const businessPhone = "51999999999"; 
+            globalWhatsAppUrl = `https://api.whatsapp.com/send?phone=${businessPhone}&text=${encodeURIComponent(outputText)}`;
+
+            if (selectedPayment === "Yape" || selectedPayment === "Plin") {
+                document.getElementById('modal-qr-title').innerText = `Pago Directo con ${selectedPayment}`;
+                document.getElementById('payment-qr-overlay').style.display = 'flex';
+            } else {
+                window.open(globalWhatsAppUrl, '_blank');
+            }
+        }
+
+        function triggerDirectWhatsApp() {
+            document.getElementById('payment-qr-overlay').style.display = 'none';
+            window.open(globalWhatsAppUrl, '_blank');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderSeccionesCatalogo();
+
+            generateDynamicPersonalizadaBlocks('pizza-grande');
+            generateDynamicPersonalizadaBlocks('pizza-familiar');
+            generateDynamicPersonalizadaBlocks('media-pizza');
+            
+            generateDynamicPromoBlocks('promo-2grandes');
+            generateDynamicPromoBlocks('promo-2familiares');
+
+            productQuantities['pizza-grande'] = 1;
+            productQuantities['pizza-familiar'] = 1;
+            productQuantities['media-pizza'] = 1;
+            productQuantities['promo-2grandes'] = 1;
+            productQuantities['promo-2familiares'] = 1;
         });
-
-        let direccionCompleta = (zoneText === "Recojo en Local") 
-            ? "🏪 [RECOJO EN LOCAL]" 
-            : (reference ? `${address} (${zoneText}) [Ref: ${reference}]` : `${address} (${zoneText})`);
-
-        let outputText = `📌 *NUEVO PEDIDO WEB - ORIGINALE*\n\n👤 *Cliente:* ${name}\n📞 *Celular:* ${phone}\n📍 *Ubicación:* ${direccionCompleta}\n${notes ? `📝 *Notas:* ${notes}\n` : ''}\n🛒 *DETALLE DEL PEDIDO:*\n${resumenProductos}\n📦 *Delivery:* S/ ${parseFloat(deliverySelect.value).toFixed(2)}\n💰 *TOTAL A PAGAR:* S/ ${document.getElementById('total-val').innerText}\n💳 *Método de Pago:* ${selectedPayment}`;
-        
-        openPreviewModal(outputText);
-    }
-
-    function openPreviewModal(text) {
-        document.getElementById('whatsapp-preview-text').innerText = text;
-        document.getElementById('whatsapp-preview-modal').style.display = 'flex';
-    }
-
-    function closePreviewModal() {
-        document.getElementById('whatsapp-preview-modal').style.display = 'none';
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        renderSeccionesCatalogo();
-        
-        generateDynamicIngredientBlocks('pizza-grande');
-        generateDynamicIngredientBlocks('pizza-familiar');
-        generateDynamicIngredientBlocks('media-pizza');
-
-        productQuantities['pizza-grande'] = 1;
-        productQuantities['pizza-familiar'] = 1;
-        productQuantities['media-pizza'] = 1;
-
-        handleDeliveryZoneChange();
-    });
-</script>
-
+    </script>
 </body>
 </html>
