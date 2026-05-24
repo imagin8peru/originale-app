@@ -53,7 +53,6 @@
             padding-bottom: 40px; 
         }
 
-        /* --- CABECERA --- */
         .app-header {
             background-color: var(--accent-red);
             border-radius: var(--radius);
@@ -90,7 +89,6 @@
         }
         .badge-status::before { content: ''; width: 6px; height: 6px; background: #00FF66; border-radius: 50%; display: inline-block; }
 
-        /* --- ACORDEONES --- */
         .block-section {
             background-color: transparent; 
             border-radius: var(--radius);
@@ -141,7 +139,6 @@
         .category-accordion.active .category-content { max-height: 35000px; transition: max-height 0.5s ease-in; }
         .category-accordion.active .category-trigger .arrow { transform: rotate(180deg); }
 
-        /* --- BANNER DE PROMOCIÓN --- */
         .promo-header-banner {
             background-color: #FFFDF9;
             border: 1px dashed var(--accent-red);
@@ -163,7 +160,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- CONTENEDOR DINÁMICO GASEOSAS REGALO --- */
         .gift-gaseosas-container {
             background: #FDF9F2;
             border: 1px dashed var(--accent-gold);
@@ -182,7 +178,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* --- PRODUCT CARDS --- */
         .product-card {
             padding: 15px;
             border-bottom: 1px solid var(--border-light);
@@ -229,7 +224,6 @@
 
         .ing-name-text { font-size: 0.72rem; font-weight: 700; color: var(--text-main); display: block; line-height: 1.2; min-height: 28px; display: flex; align-items: center; justify-content: center; }
 
-        /* PANELES DE RESUMEN COMPACTO CUANDO YA ELIGIÓ TODO */
         .completed-ingredients-summary {
             background-color: rgba(30, 107, 56, 0.06);
             border: 1px solid rgba(30, 107, 56, 0.3);
@@ -257,7 +251,6 @@
             font-size: 1rem;
         }
 
-        /* SECCIÓN EXTRAS */
         .extras-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-light); display: flex; flex-direction: column; gap: 8px; }
         .extra-row-control { 
             display: flex; 
@@ -326,7 +319,6 @@
         .trad-sizes-box { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; width: 100%; }
         .trad-size-row { background: rgba(255,255,255,0.6); border: 1px solid var(--border-light); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 
-        /* --- FORMULARIOS --- */
         .form-padding { padding: 15px; background-color: var(--card-light); }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; font-size: 0.75rem; color: var(--accent-red); margin-bottom: 5px; font-weight: 700; text-transform: uppercase;}
@@ -342,7 +334,6 @@
         }
         #cash-change-box { background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold); border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
 
-        /* --- PAGOS Y RESUMEN --- */
         .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; background-color: var(--card-light); }
         .payment-option { border: 1px solid var(--border-light); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; background-color: #ffffff; }
         .payment-option.selected { border-color: #1E6B38; background-color: rgba(30, 107, 56, 0.05); }
@@ -438,7 +429,6 @@
         </div>
     </div>
 
-    <!-- COMPRA DE ÚLTIMO MINUTO: Pan al Ajo -->
     <div class="block-section" id="section-pan-al-ajo">
         <div class="block-title">🧄 ¿Le sumamos algo más?</div>
         <div id="box-pan-al-ajo"></div>
@@ -550,6 +540,7 @@
     let addedProductsRegistry = {};
     let gaseosasRegaloSeleccionadas = {};
     let ingredientesMemoriaPizzas = {};
+    let tradExtrasMemoria = {}; // memoria de extras para pizzas tradicionales: key = "pizzaId-size"
 
     const INGREDIENTES_MAESTROS = [
         "Champignon", "Cebolla Blanca", "Aceituna Verde", "Aceituna Negra", 
@@ -666,7 +657,6 @@
         });
         document.getElementById('box-pizzas-tradicionales').innerHTML = htmlTrad;
 
-        // PAN AL AJO — ahora en su propia sección de último minuto
         document.getElementById('box-pan-al-ajo').innerHTML = `
             <div class="product-card" id="trad-pan-al-ajo-global" style="background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold);">
                 <div class="product-main">
@@ -691,7 +681,6 @@
             </div>
         `;
 
-        // PASTAS
         document.getElementById('box-pastas').innerHTML = `
             <div class="product-card" id="pasta-lasagna">
                 <div class="product-main">
@@ -716,7 +705,6 @@
             </div>
         `;
 
-        // BEBIDAS
         document.getElementById('box-bebidas').innerHTML = `
             <div class="product-card" id="bebida-pepsi">
                 <div class="product-main">
@@ -742,7 +730,6 @@
         `;
     }
 
-    /* --- LÓGICA PERSONALIZADAS --- */
     function changeQtyPersonalizada(cardId, amount) {
         if (!productQuantities[cardId]) productQuantities[cardId] = 1;
         productQuantities[cardId] += amount;
@@ -1041,7 +1028,6 @@
         renderCart();
     }
 
-    /* --- LÓGICA GASEOSAS --- */
     function checkPromoGaseosaLogic() {
         const giftBox = document.getElementById('box-gaseosas-regalo');
         if (!giftBox) return;
@@ -1098,7 +1084,6 @@
         renderCart();
     }
 
-    /* --- LÓGICA TRADICIONALES --- */
     function changeQtyTrad(pizzaId, size, amount) {
         let key = `${pizzaId}-${size}`;
         if (!productQuantities[key]) productQuantities[key] = 1;
@@ -1171,11 +1156,17 @@
             else extraRow.classList.remove('is-selected');
         }
 
+        let key = `${pizzaId}-${size}`;
+        if (!tradExtrasMemoria[key]) tradExtrasMemoria[key] = { ingAdic: 0, selectedExtras: [] };
+
         if (valSpan.classList.contains('extra-t-ing')) {
-            renderTradAdditionalSelectors(pizzaId, size, current, []);
+            tradExtrasMemoria[key].ingAdic = current;
+            if (current < tradExtrasMemoria[key].selectedExtras.length) {
+                tradExtrasMemoria[key].selectedExtras = tradExtrasMemoria[key].selectedExtras.slice(0, current);
+            }
+            renderTradAdditionalSelectors(pizzaId, size, current, tradExtrasMemoria[key].selectedExtras);
         }
 
-        let key = `${pizzaId}-${size}`;
         if (addedProductsRegistry[key]) updateTradInCart(pizzaId, size);
     }
 
@@ -1193,12 +1184,20 @@
                 let sel = (ing === val) ? 'selected' : '';
                 optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`; 
             });
-            box.innerHTML += `<select class="extra-select-item" onchange="handleTradSelectorChange('${pizzaId}', '${size}')">${optionsHTML}</select>`;
+            box.innerHTML += `<select class="extra-select-item" onchange="handleTradSelectorChange('${pizzaId}', '${size}', this)">${optionsHTML}</select>`;
         }
     }
 
-    function handleTradSelectorChange(pizzaId, size) {
+    function handleTradSelectorChange(pizzaId, size, selectEl) {
         let key = `${pizzaId}-${size}`;
+        if (!tradExtrasMemoria[key]) tradExtrasMemoria[key] = { ingAdic: 0, selectedExtras: [] };
+        // Leer todos los selectores visibles y guardarlos en memoria
+        const container = document.getElementById(`extras-trad-${pizzaId}-${size}`);
+        if (container) {
+            let valores = [];
+            container.querySelectorAll('.extra-select-item').forEach(sel => { valores.push(sel.value); });
+            tradExtrasMemoria[key].selectedExtras = valores;
+        }
         if (addedProductsRegistry[key]) updateTradInCart(pizzaId, size);
     }
 
@@ -1253,6 +1252,7 @@
         let key = `${pizzaId}-${size}`;
         cart = cart.filter(item => item.uniqueId !== key);
         delete addedProductsRegistry[key];
+        delete tradExtrasMemoria[key]; // limpiar memoria de extras
         const btn = document.getElementById(`btn-${pizzaId}-${size}`);
         if (btn) { btn.innerText = "Agregar"; btn.classList.remove("is-added"); }
         productQuantities[key] = 1;
@@ -1263,7 +1263,6 @@
         renderCart();
     }
 
-    /* --- PAN AL AJO GLOBAL --- */
     function changeQtyPanAjoGlobal(amount) {
         if (!productQuantities['pan-ajo-global']) productQuantities['pan-ajo-global'] = 1;
         productQuantities['pan-ajo-global'] += amount;
@@ -1306,7 +1305,6 @@
         renderCart();
     }
 
-    /* --- LÓGICA SIMPLES (PASTAS / BEBIDAS) --- */
     function changeSimpleQty(cardId, amount) {
         if (!productQuantities[cardId]) productQuantities[cardId] = 1;
         productQuantities[cardId] += amount;
@@ -1349,7 +1347,6 @@
         renderCart();
     }
 
-    /* --- GLOBAL CARRITO RENDER --- */
     function renderCart() {
         const container = document.getElementById('cart-items-container');
         const deliverySelect = document.getElementById('delivery-zone');
@@ -1474,16 +1471,45 @@
             return;
         }
 
-        let selectoresVacios = false;
-        document.querySelectorAll('.extra-select-item').forEach(sel => {
-            if (sel.value === "" && !sel.classList.contains('selector-regalo-gaseosa')) {
-                selectoresVacios = true;
+        // ── VALIDACIÓN DE EXTRAS SIN ELEGIR (pizzas personalizadas y tradicionales) ──
+        let extrasIncompletos = false;
+
+        // Pizzas personalizadas: revisar ingredientesMemoriaPizzas
+        Object.keys(ingredientesMemoriaPizzas).forEach(pKey => {
+            let datos = ingredientesMemoriaPizzas[pKey];
+            if (!datos) return;
+            let partes = pKey.split('-');
+            partes.pop();
+            let cardId = partes.join('-');
+            if (!addedProductsRegistry[cardId]) return;
+            let cantExtras = datos.ingAdic || 0;
+            for (let i = 0; i < cantExtras; i++) {
+                let valorElegido = datos.selectedExtras[i];
+                if (!valorElegido || valorElegido === "") {
+                    extrasIncompletos = true;
+                }
             }
         });
-        if(selectoresVacios) {
-            alert("Por favor, selecciona un sabor para cada ingrediente adicional o reduce el contador de extras si no deseas agregarlos.");
+
+        // Pizzas tradicionales: revisar tradExtrasMemoria
+        Object.keys(tradExtrasMemoria).forEach(key => {
+            let datos = tradExtrasMemoria[key];
+            if (!datos) return;
+            if (!addedProductsRegistry[key]) return;
+            let cantExtras = datos.ingAdic || 0;
+            for (let i = 0; i < cantExtras; i++) {
+                let valorElegido = datos.selectedExtras[i];
+                if (!valorElegido || valorElegido === "") {
+                    extrasIncompletos = true;
+                }
+            }
+        });
+
+        if (extrasIncompletos) {
+            alert("No elegiste tu ingrediente(s) adicional(es). Para proceder con tu pedido debes elegirlos.");
             return;
         }
+        // ── FIN VALIDACIÓN ──
 
         if (selectedPayment === "Efectivo") {
             if (cashAmount) {
