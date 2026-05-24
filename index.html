@@ -203,20 +203,25 @@
         .product-desc { font-size: 0.78rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
 
-        .unit-salsa-block { background-color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; }
-        .unit-salsa-block:last-child { margin-bottom: 0; }
+        /* --- INTERFAZ CONTADORES VERTICALES --- */
+        .salsas-dynamic-container { display: none; flex-direction: column; gap: 12px; width: 100%; margin-top: 5px; }
+        .unit-salsa-block { background-color: rgba(255, 255, 255, 0.9); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; width: 100%; }
         .unit-salsa-title { font-size: 0.78rem; color: var(--accent-red); font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid rgba(142, 26, 26, 0.1); padding-bottom: 4px;}
 
-        .ingredients-counter-grid { display: flex; flex-direction: column; gap: 6px; }
+        /* ✅ REQUERIMIENTO: DOS COLUMNAS REACCIONARIAS COMPACTAS */
+        .ingredients-counter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         
         .ing-counter-row { 
             display: flex; 
-            justify-content: space-between; 
+            flex-direction: column;
             align-items: center; 
+            justify-content: center;
             background: #ffffff; 
-            padding: 6px 10px; 
+            padding: 8px; 
             border-radius: 6px; 
             border: 1px solid var(--border-light); 
+            text-align: center;
+            gap: 6px;
             transition: all 0.25s ease;
         }
         .ing-counter-row.is-selected {
@@ -224,7 +229,35 @@
             border-color: var(--accent-gold);
         }
 
-        .ing-name-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+        .ing-name-text { font-size: 0.72rem; font-weight: 700; color: var(--text-main); display: block; line-height: 1.2; min-height: 28px; display: flex; align-items: center; justify-content: center; }
+
+        /* PANELES DE RESUMEN COMPACTO CUANDO YA ELIGIÓ TODO */
+        .completed-ingredients-summary {
+            background-color: rgba(30, 107, 56, 0.06);
+            border: 1px solid rgba(30, 107, 56, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .completed-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            background: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .btn-remove-selected-ing {
+            color: #dc3545;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 4px;
+            font-size: 1rem;
+        }
 
         /* SECCIÓN EXTRAS */
         .extras-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-light); display: flex; flex-direction: column; gap: 8px; }
@@ -326,7 +359,24 @@
         .summary-total { font-weight: 700; font-size: 0.95rem; color: var(--text-main); border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 8px; }
         .total-amount { font-size: 1.15rem; color: var(--accent-red); font-weight: 700; }
 
-        /* --- VENTANA PREVIEW DE WHATSAPP --- */
+        /* ✅ RESTAURADO: BOTÓN VERDE ORIGINAL PREMIUM PARA EL ENVÍO */
+        .btn-confirm-order {
+            background-color: #1E6B38 !important;
+            color: white !important;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .preview-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 99999; padding: 15px; backdrop-filter: blur(4px); }
         .preview-modal-box { background-color: #E5DDD5; width: 100%; max-width: 430px; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: 1px solid #c0c0c0; }
         .preview-header { background-color: #075E54; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
@@ -362,7 +412,6 @@
                 </div>
                 
                 <div id="box-gaseosas-regalo" class="gift-gaseosas-container" style="display: none;"></div>
-                
                 <div id="box-pizzas-personalizadas"></div>
             </div>
         </div>
@@ -702,9 +751,11 @@
         if (addedProductsRegistry[cardId]) {
             updatePersonalizadaInCart(cardId);
         }
+        // ✅ SOLUCIÓN UX: Recalcula la UI de gaseosas inmediatamente al mutar el contador
         checkPromoGaseosaLogic();
     }
 
+    // ✅ REQUERIMIENTO COMPLETO: CASCADA VERTICAL, 2 COLUMNAS COMPACTAS Y COMPORTAMIENTO COLAPSIBLE INTELIGENTE
     function generateDynamicPersonalizadaBlocks(cardId) {
         const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
         if (!container) return;
@@ -732,6 +783,132 @@
             let datosViejos = pasadasSelecciones[i] || { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
             let tituloUnidad = currentQty === 1 ? "Elige los ingredientes de tu pizza" : `ELIGE LOS INGREDIENTES DE TU PIZZA ${i}`;
 
+            // Calcular cuántos ingredientes van seleccionados en esta pizza específica
+            let selectedCount = 0;
+            let selectedItemsList = [];
+            Object.keys(datosViejos.mapIng).forEach(ing => {
+                let count = datosViejos.mapIng[ing] || 0;
+                if(count > 0) {
+                    selectedCount += count;
+                    for(let c=0; c<count; c++) { selectedItemsList.push(ing); }
+                }
+            });
+
+            let innerContentHTML = '';
+
+            // COMPORTAMIENTO INTELIGENTE: Si llegó al límite (ej. 4/4), colapsa y muestra el resumen premium
+            if (selectedCount >= limitBase) {
+                let listItemsHTML = '';
+                selectedItemsList.forEach((ing, itemIdx) => {
+                    listItemsHTML += `
+                        <div class="completed-item">
+                            <span>✔ ${ing}</span>
+                            <span class="btn-remove-selected-ing" onclick="removeSingleIngOnTheFly('${cardId}', ${i}, '${ing}')">×</span>
+                        </div>
+                    `;
+                });
+                innerContentHTML = `
+                    <div class="completed-ingredients-summary">
+                        <div style="font-size:0.75rem; font-weight:700; color:#1E6B38; margin-bottom:4px;">🍕 ¡PIZZA COMPLETA! (${selectedCount}/${limitBase})</div>
+                        ${listItemsHTML}
+                    </div>
+                `;
+            } else {
+                // Renderizar la grilla compacta de dos columnas con controles ABAJO del nombre
+                let rowsHTML = '';
+                INGREDIENTES_MAESTROS.forEach(ing => {
+                    let count = datosViejos.mapIng[ing] || 0;
+                    let highlightClass = count > 0 ? 'is-selected' : '';
+                    rowsHTML += `
+                        <div class="ing-counter-row ${highlightClass}" data-p-ing-name="${cardId}-${i}-${ing}">
+                            <span class="ing-name-text">${ing}</span>
+                            <div class="quantity-control" style="padding:2px 6px; gap:8px; width:100%; justify-content:space-between;">
+                                <button class="qty-btn" style="font-size:0.85rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, -1, '${ing}')">−</button>
+                                <span class="qty-val ing-row-qty" data-ing="${ing}" style="font-size:0.75rem;">${count}</span>
+                                <button class="qty-btn btn-plus-ing" style="font-size:0.85rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, 1, '${ing}')">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                innerContentHTML = `<div class="ingredients-counter-grid">${rowsHTML}</div>`;
+            }
+
+            let extrasHTML = `
+                <div class="extras-section">
+                    <div class="extra-row-control ${datosViejos.ingAdic > 0 ? 'is-selected' : ''}">
+                        <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
+                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
+                            <span class="qty-val qty-extra-ing" style="font-size:0.8rem;">${datosViejos.ingAdic}</span>
+                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
+                        </div>
+                    </div>
+                    <div class="additional-selectors-box" id="box-pers-selectores-${cardId}-${i}"></div>
+                    <div class="extra-row-control ${datosViejos.mozAdic > 0 ? 'is-selected' : ''}">
+                        <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
+                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
+                            <span class="qty-val qty-extra-moz" style="font-size:0.8rem;">${datosViejos.mozAdic}</span>
+                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML += `
+                <div class="unit-salsa-block" data-pers-un="${i}" style="margin-bottom:12px;">
+                    <div class="unit-salsa-title">${tituloUnidad} (<span class="sum-total-counter">${selectedCount}</span>/${limitBase})</div>
+                    ${innerContentHTML}
+                    ${extrasHTML}
+                </div>
+            `;
+            
+            recalculatePersonalizadaIngredientsLimit(cardId, i, limitBase);
+            renderPersonalizadaAdditionalSelectors(cardId, i, datosViejos.ingAdic, datosViejos.selectedExtras);
+        }
+
+        if (addedProductsRegistry[cardId]) {
+            container.style.display = 'flex';
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function removeSingleIngOnTheFly(cardId, unitIdx, ingName) {
+        let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
+        if(!block) return;
+        
+        // Forzar reducción del conteo de este ingrediente y redibujar automáticamente para expandir la lista
+        let pasadasSelecciones = [];
+        let blocks = document.querySelectorAll(`#ingredientes-dinamicos-${cardId} [data-pers-un]`);
+        blocks.forEach(b => {
+            let u = b.getAttribute('data-pers-un');
+            let mapIng = {};
+            b.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
+            
+            // Si es la fila que buscamos, le restamos la porción
+            if(parseInt(u) === parseInt(unitIdx) && mapIng[ingName] > 0) {
+                mapIng[ingName]--;
+            }
+
+            let ingAdic = parseInt(b.querySelector('.qty-extra-ing')?.innerText || "0");
+            let mozAdic = parseInt(b.querySelector('.qty-extra-moz')?.innerText || "0");
+            let selectedExtras = [];
+            b.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
+            pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
+        });
+
+        // Regenerar la interfaz en caliente
+        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+        container.innerHTML = '';
+        
+        const limitBase = CONFIG_PERSONALIZADAS[cardId].limit;
+        for (let i = 1; i <= (productQuantities[cardId] || 1); i++) {
+            let datosViejos = pasadasSelecciones[i];
+            let tituloUnidad = productQuantities[cardId] === 1 ? "Elige los ingredientes de tu pizza" : `ELIGE LOS INGREDIENTES DE TU PIZZA ${i}`;
+            let selectedCount = 0;
+            Object.values(datosViejos.mapIng).forEach(v => selectedCount += v);
+
             let rowsHTML = '';
             INGREDIENTES_MAESTROS.forEach(ing => {
                 let count = datosViejos.mapIng[ing] || 0;
@@ -739,10 +916,10 @@
                 rowsHTML += `
                     <div class="ing-counter-row ${highlightClass}" data-p-ing-name="${cardId}-${i}-${ing}">
                         <span class="ing-name-text">${ing}</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, -1, '${ing}')">−</button>
+                        <div class="quantity-control" style="padding:2px 6px; gap:8px; width:100%; justify-content:space-between;">
+                            <button class="qty-btn" style="font-size:0.85rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, -1, '${ing}')">−</button>
                             <span class="qty-val ing-row-qty" data-ing="${ing}" style="font-size:0.8rem;">${count}</span>
-                            <button class="qty-btn btn-plus-ing" style="font-size:0.9rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, 1, '${ing}')">+</button>
+                            <button class="qty-btn btn-plus-ing" style="font-size:0.85rem;" onclick="changePersonalizadaIngredientCount(this, '${cardId}', ${i}, 1, '${ing}')">+</button>
                         </div>
                     </div>
                 `;
@@ -771,27 +948,21 @@
             `;
 
             container.innerHTML += `
-                <div class="unit-salsa-block" data-pers-un="${i}" style="margin-top:12px;">
-                    <div class="unit-salsa-title">${tituloUnidad} (<span class="sum-total-counter">0</span>/${limitBase})</div>
+                <div class="unit-salsa-block" data-pers-un="${i}">
+                    <div class="unit-salsa-title">${tituloUnidad} (<span class="sum-total-counter">${selectedCount}</span>/${limitBase})</div>
                     <div class="ingredients-counter-grid">${rowsHTML}</div>
                     ${extrasHTML}
                 </div>
             `;
-            
             recalculatePersonalizadaIngredientsLimit(cardId, i, limitBase);
             renderPersonalizadaAdditionalSelectors(cardId, i, datosViejos.ingAdic, datosViejos.selectedExtras);
         }
-
-        if (addedProductsRegistry[cardId]) {
-            container.style.display = 'flex';
-        } else {
-            container.style.display = 'none';
-        }
+        if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
     }
 
     function changePersonalizadaIngredientCount(btn, cardId, unitIdx, amount, ingName) {
         const rowControls = btn.parentElement;
-        const valSpan = rowControls.querySelector('.qty-val');
+        const valSpan = rowControls.querySelector('.ing-row-qty');
         let current = parseInt(valSpan.innerText);
 
         let block = document.querySelector(`#ingredientes-dinamicos-${cardId} [data-pers-un="${unitIdx}"]`);
@@ -809,7 +980,17 @@
         if (current > 0) parentRow.classList.add('is-selected');
         else parentRow.classList.remove('is-selected');
 
-        recalculatePersonalizadaIngredientsLimit(cardId, unitIdx, limitMax);
+        // Evaluar si con este cambio se alcanzó el límite completo para gatillar el colapso
+        let updatedSum = 0;
+        block.querySelectorAll('.ing-row-qty').forEach(el => { updatedSum += parseInt(el.innerText); });
+        
+        if (updatedSum >= limitMax) {
+            // Forzar un redibujo limpio para gatillar el colapso
+            setTimeout(() => { generateDynamicPersonalizadaBlocks(cardId); }, 200);
+        } else {
+            recalculatePersonalizadaIngredientsLimit(cardId, unitIdx, limitMax);
+        }
+
         if (addedProductsRegistry[cardId]) updatePersonalizadaInCart(cardId);
     }
 
@@ -875,48 +1056,6 @@
         checkPromoGaseosaLogic();
     }
 
-    function updatePersonalizadaInCart(cardId) {
-        cart = cart.filter(item => item.parentCardId !== cardId);
-        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
-        const blocks = container.querySelectorAll('[data-pers-un]');
-        const config = CONFIG_PERSONALIZADAS[cardId];
-        const globalQty = productQuantities[cardId] || 1;
-
-        blocks.forEach(block => {
-            const indexUnidad = block.getAttribute('data-pers-un');
-            let ingLineas = [];
-            block.querySelectorAll('.ing-row-qty').forEach(el => {
-                let count = parseInt(el.innerText);
-                if (count > 0) ingLineas.push(count === 1 ? el.getAttribute('data-ing') : `${el.getAttribute('data-ing')} (x${count})`);
-            });
-            let txtIngs = ingLineas.length > 0 ? ingLineas.join(', ') : 'Solo Queso y Salsa';
-
-            const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
-            const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-            let totalExtrasCost = (ingAdic * 3.00) + (mozAdic * 6.00);
-
-            let extrasList = [];
-            block.querySelectorAll('.extra-select-item').forEach(s => { if(s.value !== "") extrasList.push(s.value); });
-
-            let finalLabelText = globalQty === 1 ? config.name : `${config.name} (#${indexUnidad})`;
-
-            let buildOptionsText = `Ingredientes: ${txtIngs}`;
-            if (extrasList.length > 0) buildOptionsText += ` / Extra Ings: [${extrasList.join(', ')}]`;
-            if (mozAdic > 0) buildOptionsText += ` / +${mozAdic} Mozarella Extra`;
-
-            cart.push({
-                uniqueId: `${cardId}-u${indexUnidad}`,
-                parentCardId: cardId,
-                name: finalLabelText,
-                price: config.price + totalExtrasCost,
-                qty: 1,
-                optionsText: buildOptionsText,
-                type: 'armada'
-            });
-        });
-        renderCart();
-    }
-
     function clearPersonalizadaCard(cardId) {
         cart = cart.filter(item => item.parentCardId !== cardId);
         delete addedProductsRegistry[cardId];
@@ -933,7 +1072,7 @@
         renderCart();
     }
 
-    /* --- LÓGICA: CÁLCULO COLECTIVO DE GASEOSAS GRATIS POR CADA PAR DE PIZZAS --- */
+    /* --- LÓGICA: CÁLCULO COLECTIVO DE GASEOSAS GRATIS --- */
     function checkPromoGaseosaLogic() {
         const giftBox = document.getElementById('box-gaseosas-regalo');
         if (!giftBox) return;
@@ -971,27 +1110,21 @@
             
             giftBox.innerHTML = selectoresHTML;
             giftBox.style.display = 'flex';
-            
-            // Sincronizar en vivo las gaseosas elegidas al regenerarse el DOM
-            handleGiftGaseosaSelectChange(); 
         } else {
             giftBox.innerHTML = '';
             giftBox.style.display = 'none';
             gaseosasRegaloSeleccionadas = {};
-            renderCart();
         }
+        renderCart();
     }
 
-    // ✅ CORRECCIÓN: SINCRONIZACIÓN COLECTIVA REAL EN EL RESUMEN DEL CARRITO (CON COSTO S/ 0.00)
     function handleGiftGaseosaSelectChange() {
         gaseosasRegaloSeleccionadas = {};
         const selects = document.querySelectorAll('.selector-regalo-gaseosa');
         selects.forEach(selectEl => {
             let index = selectEl.getAttribute('data-gift-index');
             let value = selectEl.value;
-            if (value !== "") {
-                gaseosasRegaloSeleccionadas[index] = value;
-            }
+            if (value !== "") { gaseosasRegaloSeleccionadas[index] = value; }
         });
         renderCart();
     }
@@ -1237,6 +1370,16 @@
         renderCart();
     }
 
+    function clearSimpleCard(cardId) {
+        cart = cart.filter(i => i.uniqueId !== cardId);
+        delete addedProductsRegistry[cardId];
+        const btn = document.getElementById(`btn-${cardId}`);
+        if(btn) { btn.innerText = "Agregar"; btn.classList.remove("is-added"); }
+        productQuantities[cardId] = 1;
+        document.getElementById(`${cardId}-qty`).innerText = 1;
+        renderCart();
+    }
+
     /* --- GLOBAL CARRITO RENDER --- */
     function renderCart() {
         const container = document.getElementById('cart-items-container');
@@ -1270,7 +1413,7 @@
             `;
         });
 
-        // ✅ SE CORRIGIÓ EL FLUJO ACÁ: Sincronizar y renderizar las gaseosas de regalo en el resumen visual
+        // Renderizar las gaseosas de regalo S/ 0.00
         Object.keys(gaseosasRegaloSeleccionadas).forEach(key => {
             container.innerHTML += `
                 <div class="cart-item-row" style="background-color: rgba(234, 160, 0, 0.03); padding: 6px 4px;">
@@ -1389,7 +1532,6 @@
             if (item.optionsText) resumenProductos += `   └ _${item.optionsText}_\n`;
         });
 
-        // ✅ SE CORRIGIÓ EL TEXTO ACÁ: Inyectar las gaseosas gratis en el texto final consolidado de WhatsApp
         if (cantidadRegalosSeleccionados > 0) {
             resumenProductos += `🎁 *GASEOSAS REGALOS DE PROMOCIÓN (S/ 0.00):*\n`;
             Object.keys(gaseosasRegaloSeleccionadas).forEach(key => {
