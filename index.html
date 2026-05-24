@@ -165,7 +165,7 @@
         .product-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
 
         /* --- INTERFAZ CONTADORES --- */
-        .salsas-dynamic-container { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 5px; }
+        .salsas-dynamic-container { display: none; flex-direction: column; gap: 10px; width: 100%; margin-top: 5px; }
         .unit-salsa-block { background-color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; }
         .unit-salsa-title { font-size: 0.78rem; color: var(--accent-red); font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid rgba(142, 26, 26, 0.1); padding-bottom: 4px;}
 
@@ -204,6 +204,16 @@
             background-color: rgba(234, 160, 0, 0.12);
             border-color: var(--accent-gold);
         }
+
+        .extra-row-control.pan-ajo-diferenciado {
+            background: #F4EFEB;
+            border: 1px solid #A48871;
+        }
+        .extra-row-control.pan-ajo-diferenciado.is-selected {
+            background-color: #EADEC9;
+            border-color: var(--accent-red);
+        }
+
         .extra-label-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
         
         .additional-selectors-box { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; padding-left: 10px; border-left: 2px solid var(--accent-gold); }
@@ -598,7 +608,6 @@
             `;
         });
         
-        // ✅ CORRECCIÓN SOLICITADA: PAN AL AJO ESPECIAL DISPONIBLE GLOBALMENTE AL FINAL DE TODAS LAS TRADICIONALES
         htmlTrad += `
             <div class="product-card" id="trad-pan-al-ajo-global" style="margin-top: 15px; background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold);">
                 <div class="product-main">
@@ -779,6 +788,14 @@
                             <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
                         </div>
                     </div>
+                    <div class="extra-row-control pan-ajo-diferenciado ${datosViejos.panAdic > 0 ? 'is-selected' : ''}">
+                        <span class="extra-label-text" style="color: #613C24;">🍞 Pan al Ajo Especial (+S/ 9.00)</span>
+                        <div class="quantity-control" style="padding:2px 8px; gap:8px; border-color: #A48871;">
+                            <button class="qty-btn" style="font-size:0.9rem; color: #613C24;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
+                            <span class="qty-val qty-extra-pan" style="font-size:0.8rem; color: #613C24;">${datosViejos.panAdic}</span>
+                            <button class="qty-btn" style="font-size:0.9rem; color: #613C24;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
+                        </div>
+                    </div>
                 </div>
             `;
 
@@ -792,6 +809,12 @@
             
             recalculatePersonalizadaIngredientsLimit(cardId, i, limitBase);
             renderPersonalizadaAdditionalSelectors(cardId, i, datosViejos.ingAdic, datosViejos.selectedExtras);
+        }
+
+        if (addedProductsRegistry[cardId]) {
+            container.style.display = 'flex';
+        } else {
+            container.style.display = 'none';
         }
     }
 
@@ -871,6 +894,9 @@
         const btn = document.getElementById(`btn-${cardId}`);
         if (btn) { btn.innerText = "Confirmado ✔"; btn.classList.add("is-added"); }
         updatePersonalizadaInCart(cardId);
+        
+        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+        if(container) container.style.display = 'flex';
     }
 
     function updatePersonalizadaInCart(cardId) {
@@ -891,7 +917,8 @@
 
             const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
             const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-            let totalExtrasCost = (ingAdic * 3.00) + (mozAdic * 6.00);
+            const panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
+            let totalExtrasCost = (ingAdic * 3.00) + (mozAdic * 6.00) + (panAdic * 9.00);
 
             let extrasList = [];
             block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
@@ -901,6 +928,7 @@
             let buildOptionsText = `Ingredientes: ${txtIngs}`;
             if (ingAdic > 0) buildOptionsText += ` / Extra Ings: [${extrasList.join(', ')}]`;
             if (mozAdic > 0) buildOptionsText += ` / +${mozAdic} Mozarella Extra`;
+            if (panAdic > 0) buildOptionsText += ` / +${panAdic} Pan al Ajo Esp.`;
 
             cart.push({
                 uniqueId: `${cardId}-u${indexUnidad}`,
@@ -923,6 +951,9 @@
         productQuantities[cardId] = 1;
         document.getElementById(`${cardId}-qty`).innerText = 1;
         generateDynamicPersonalizadaBlocks(cardId);
+        
+        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+        if(container) container.style.display = 'none';
         renderCart();
     }
 
@@ -952,9 +983,10 @@
                 block.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
                 let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
                 let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                let panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
                 let selectedExtras = [];
                 block.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
-                pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
+                pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, panAdic, selectedExtras };
             }
         }
 
@@ -967,7 +999,7 @@
             }
 
             for (let pNum = 1; pNum <= promoConfig.pizzasCount; pNum++) {
-                let datosViejos = pasadasSelecciones[correlativoSubUnidad] || { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+                let datosViejos = pasadasSelecciones[correlativoSubUnidad] || { mapIng: {}, ingAdic: 0, mozAdic: 0, panAdic: 0, selectedExtras: [] };
                 let titleLabel = `ELIGE LOS INGREDIENTES DE TU PIZZA ${correlativoSubUnidad} (${promoConfig.labelSizes})`;
 
                 let rowsHTML = '';
@@ -1008,6 +1040,14 @@
                                     <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, 1, '${cardId}', ${correlativoSubUnidad})">+</button>
                                 </div>
                             </div>
+                            <div class="extra-row-control ${datosViejos.panAdic > 0 ? 'is-selected' : ''}">
+                                <span class="extra-label-text">Pan al Ajo Especial (+S/ 9.00)</span>
+                                <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, -1, '${cardId}', ${correlativoSubUnidad})">−</button>
+                                    <span class="qty-val qty-extra-pan">${datosViejos.panAdic}</span>
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, 1, '${cardId}', ${correlativoSubUnidad})">+</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1016,6 +1056,12 @@
                 renderPromoAdditionalSelectors(cardId, correlativoSubUnidad, datosViejos.ingAdic, datosViejos.selectedExtras);
                 correlativoSubUnidad++;
             }
+        }
+
+        if (addedProductsRegistry[cardId]) {
+            container.style.display = 'flex';
+        } else {
+            container.style.display = 'none';
         }
     }
 
@@ -1095,6 +1141,9 @@
         const btn = document.getElementById(`btn-${cardId}`);
         if(btn) { btn.innerText = "Promo Confirmada ✔"; btn.classList.add("is-added"); }
         updatePromoInCart(cardId);
+
+        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+        if(container) container.style.display = 'flex';
     }
 
     function updatePromoInCart(cardId) {
@@ -1118,7 +1167,8 @@
 
             const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
             const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-            totalExtrasCost += (ingAdic * 3.00) + (mozAdic * 6.00);
+            const panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
+            totalExtrasCost += (ingAdic * 3.00) + (mozAdic * 6.00) + (panAdic * 9.00);
 
             let extrasList = [];
             block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
@@ -1126,6 +1176,7 @@
             let buildStr = `Pizza #${indexUnidad}: [${txtIngs}]`;
             if (ingAdic > 0) buildStr += ` (+ Extras: ${extrasList.join(', ')})`;
             if (mozAdic > 0) buildStr += ` (+${mozAdic} Mozarella Extra)`;
+            if (panAdic > 0) buildStr += ` (+${panAdic} Pan al Ajo Esp.)`;
             
             resumenPizzasPromoArr.push(buildStr);
         });
@@ -1150,6 +1201,9 @@
         productQuantities[cardId] = 1;
         document.getElementById(`${cardId}-qty`).innerText = 1;
         generateDynamicPromoBlocks(cardId);
+
+        const container = document.getElementById(`ingredientes-dinamicos-${cardId}`);
+        if(container) container.style.display = 'none';
         renderCart();
     }
 
@@ -1162,39 +1216,57 @@
 
         document.getElementById(`qty-${pizzaId}-${size}`).innerText = productQuantities[key];
         generateTradExtrasBlock(pizzaId, size);
-
-        if (addedProductsRegistry[key]) {
-            updateTradInCart(pizzaId, size);
-        }
+        if (addedProductsRegistry[key]) updateTradInCart(pizzaId, size);
     }
 
-    // ✅ CORRECCIÓN: TRADICIONALES SOLO MANEJAN INGREDIENTE EXTRA Y MOZZARELLA
+    // ✅ FIX: SOLUCIÓN COMPLETA AL DESPLIEGUE DINÁMICO EXCLUSIVO AL AÑADIR
     function generateTradExtrasBlock(pizzaId, size) {
+        let key = `${pizzaId}-${size}`;
         const container = document.getElementById(`extras-trad-${pizzaId}-${size}`);
         if (!container) return;
 
-        if (container.children.length === 0) {
+        // Mantener las porciones previas antes de redibujar por cambio de cantidad global
+        let ingAdic = 0, mozAdic = 0;
+        let selectedExtras = [];
+        let existingBlock = container.querySelector('.unit-salsa-block');
+        if (existingBlock) {
+            ingAdic = parseInt(existingBlock.querySelector('.qty-extra-ing')?.innerText || "0");
+            mozAdic = parseInt(existingBlock.querySelector('.qty-extra-moz')?.innerText || "0");
+            existingBlock.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
+        }
+
+        container.innerHTML = '';
+
+        // Solo renderiza la interfaz interna si el producto ha sido explícitamente agregado
+        if (addedProductsRegistry[key]) {
             container.innerHTML = `
-                <div class="extras-section" style="margin-top:5px;">
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
-                            <span class="qty-val extra-t-ing">0</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
+                <div class="unit-salsa-block" style="width: 100%; margin-top: 8px;">
+                    <div class="unit-salsa-title" style="font-size:0.72rem; color:var(--accent-gold);">¿Deseas añadir extras a esta pizza tradicional?</div>
+                    <div class="extras-section" style="margin-top:0; padding-top:0; border-top:none;">
+                        <div class="extra-row-control ${ingAdic > 0 ? 'is-selected' : ''}">
+                            <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
+                            <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
+                                <span class="qty-val extra-t-ing">${ingAdic}</span>
+                                <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="additional-selectors-box" id="box-selectores-trad-extras-${pizzaId}-${size}"></div>
-                    <div class="extra-row-control">
-                        <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
-                        <div class="quantity-control" style="padding:2px 8px; gap:8px;">
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
-                            <span class="qty-val extra-t-moz">0</span>
-                            <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
+                        <div class="additional-selectors-box" id="box-selectores-trad-extras-${pizzaId}-${size}"></div>
+                        <div class="extra-row-control ${mozAdic > 0 ? 'is-selected' : ''}">
+                            <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
+                            <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, -1, '${pizzaId}', '${size}')">−</button>
+                                <span class="qty-val extra-t-moz">${mozAdic}</span>
+                                <button class="qty-btn" style="font-size:0.9rem;" onclick="changeTradExtraLive(this, 1, '${pizzaId}', '${size}')">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
+            container.style.display = 'flex';
+            renderTradAdditionalSelectors(pizzaId, size, ingAdic, selectedExtras);
+        } else {
+            container.style.display = 'none';
         }
     }
 
@@ -1212,7 +1284,7 @@
         }
 
         if (valSpan.classList.contains('extra-t-ing')) {
-            renderTradAdditionalSelectors(pizzaId, size, current);
+            renderTradAdditionalSelectors(pizzaId, size, current, []);
         }
 
         let key = `${pizzaId}-${size}`;
@@ -1221,13 +1293,17 @@
         }
     }
 
-    function renderTradAdditionalSelectors(pizzaId, size, count) {
+    function renderTradAdditionalSelectors(pizzaId, size, count, preselectedValues) {
         const box = document.getElementById(`box-selectores-trad-extras-${pizzaId}-${size}`);
         if (!box) return;
         box.innerHTML = '';
         for(let i=0; i < count; i++) {
             let optionsHTML = '';
-            INGREDIENTES_MAESTROS.forEach(ing => { optionsHTML += `<option value="${ing}">${ing}</option>`; });
+            let val = preselectedValues[i] || INGREDIENTES_MAESTROS[0];
+            INGREDIENTES_MAESTROS.forEach(ing => { 
+                let sel = (ing === val) ? 'selected' : '';
+                optionsHTML += `<option value="${ing}" ${sel}>${ing}</option>`; 
+            });
             box.innerHTML += `<select class="extra-select-item" onchange="handleTradSelectorChange('${pizzaId}', '${size}')">${optionsHTML}</select>`;
         }
     }
@@ -1242,6 +1318,9 @@
         addedProductsRegistry[key] = true;
         const btn = document.getElementById(`btn-${pizzaId}-${sizeLabel.toLowerCase()}`);
         if(btn) { btn.innerText = "Agregado ✔"; btn.classList.add("is-added"); }
+        
+        // Ejecutar dibujo y forzar apertura del display de extras
+        generateTradExtrasBlock(pizzaId, sizeLabel.toLowerCase());
         updateTradInCart(pizzaId, sizeLabel.toLowerCase());
     }
 
@@ -1254,7 +1333,7 @@
         
         let ingAdic = 0, mozAdic = 0;
         let extrasElegidosList = [];
-        if (container) {
+        if (container && addedProductsRegistry[key]) {
             ingAdic = parseInt(container.querySelector('.extra-t-ing')?.innerText || "0");
             mozAdic = parseInt(container.querySelector('.extra-t-moz')?.innerText || "0");
             container.querySelectorAll('.extra-select-item').forEach(sel => { extrasElegidosList.push(sel.value); });
@@ -1290,13 +1369,16 @@
         if (btn) { btn.innerText = "Agregar"; btn.classList.remove("is-added"); }
         productQuantities[key] = 1;
         document.getElementById(`qty-${pizzaId}-${size}`).innerText = 1;
+        
         const container = document.getElementById(`extras-trad-${pizzaId}-${size}`);
-        if (container) container.innerHTML = '';
-        generateTradExtrasBlock(pizzaId, size);
+        if (container) {
+            container.innerHTML = '';
+            container.style.display = 'none';
+        }
         renderCart();
     }
 
-    /* --- ✅ LÓGICA EXCLUSIVA: PAN AL AJO GLOBAL AL FINAL DE TRADICIONALES --- */
+    /* --- PAN AL AJO GLOBAL AL FINAL DE TRADICIONALES --- */
     function changeQtyPanAjoGlobal(amount) {
         if (!productQuantities['pan-ajo-global']) productQuantities['pan-ajo-global'] = 1;
         productQuantities['pan-ajo-global'] += amount;
@@ -1320,7 +1402,7 @@
         cart.push({
             uniqueId: 'pan-ajo-global',
             parentCardId: 'tradicionales-complemento',
-            name: 'Pan al Ajo Especial (Entrada)',
+            name: 'Pan al Ajo Especial',
             price: 9.00,
             qty: qty,
             optionsText: 'Complemento de mesa',
