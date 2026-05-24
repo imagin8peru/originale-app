@@ -523,6 +523,21 @@
 
 </div>
 
+<div class="preview-modal-overlay" id="whatsapp-preview-modal">
+    <div class="preview-modal-box">
+        <div class="preview-header">
+            <div class="preview-header-title">💬 Confirmación de Pedido</div>
+            <span class="preview-close-x" onclick="closePreviewModal()">×</span>
+        </div>
+        <div class="preview-chat-body">
+            <div class="preview-msg-bubble" id="whatsapp-preview-text"></div>
+        </div>
+        <div class="preview-footer-actions">
+            <button class="preview-btn-close" onclick="closePreviewModal()">Cerrar y Corregir</button>
+        </div>
+    </div>
+</div>
+
 <script>
     let cart = [];
     let selectedPayment = "Yape";
@@ -1298,7 +1313,6 @@
         }
     }
 
-    // Corregido: pasta-lasagna ahora tiene un ID dinámico correcto
     function addSimpleToCart(cardId, pName, price) {
         addedProductsRegistry[cardId] = true;
         const btn = document.getElementById(`btn-${cardId}`);
@@ -1457,7 +1471,7 @@
         let selectoresVacios = false;
         document.querySelectorAll('.extra-select-item').forEach(sel => {
             if (sel.value === "" && !sel.classList.contains('selector-regalo-gaseosa')) {
-                selectoresVacios = true;
+                selectorsVacios = true;
             }
         });
         if(selectoresVacios) {
@@ -1477,13 +1491,13 @@
         let resumenProductos = "";
         cart.forEach(item => {
             resumenProductos += `* ${item.qty < 10 ? '0' + item.qty : item.qty} x ${item.name} (S/ ${(item.price * item.qty).toFixed(2)})\n`;
-            if (item.optionsText) resumenProductos += `   └ _${item.optionsText}_\n`;
+            if (item.optionsText) resumenProductos += `    └ _${item.optionsText}_\n`;
         });
 
         if (cantidadRegalosSeleccionados > 0) {
             resumenProductos += `🎁 *GASEOSAS REGALOS DE PROMOCIÓN (S/ 0.00):*\n`;
             Object.keys(gaseosasRegaloSeleccionadas).forEach(key => {
-                resumenProductos += `   └ _01 x ${gaseosasRegaloSeleccionadas[key]}_\n`;
+                resumenProductos += `    └ _01 x ${gaseosasRegaloSeleccionadas[key]}_\n`;
             });
         }
 
