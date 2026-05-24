@@ -357,7 +357,6 @@
         .summary-total { font-weight: 700; font-size: 0.95rem; color: var(--text-main); border-top: 1px solid var(--border-light); padding-top: 12px; margin-top: 8px; }
         .total-amount { font-size: 1.15rem; color: var(--accent-red); font-weight: 700; }
 
-        /* --- ✅ FIX: ESTILO VERDE ORIGINAL RESTAURADO AL 100% --- */
         .btn-confirm-order {
             background-color: #1E6B38 !important;
             color: white !important;
@@ -437,6 +436,12 @@
             </div>
             <div class="category-content" id="box-bebidas"></div>
         </div>
+    </div>
+
+    <!-- COMPRA DE ÚLTIMO MINUTO: Pan al Ajo -->
+    <div class="block-section" id="section-pan-al-ajo">
+        <div class="block-title">🧄 ¿Le sumamos algo más?</div>
+        <div id="box-pan-al-ajo"></div>
     </div>
 
     <div class="block-section">
@@ -659,9 +664,11 @@
                 </div>
             `;
         });
-        
-        htmlTrad += `
-            <div class="product-card" id="trad-pan-al-ajo-global" style="margin-top: 15px; background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold);">
+        document.getElementById('box-pizzas-tradicionales').innerHTML = htmlTrad;
+
+        // PAN AL AJO — ahora en su propia sección de último minuto
+        document.getElementById('box-pan-al-ajo').innerHTML = `
+            <div class="product-card" id="trad-pan-al-ajo-global" style="background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold);">
                 <div class="product-main">
                     <div class="product-image"><img src="imagenes/pan-ajo.png" onerror="this.src='imagenes/default-pizza.png'"></div>
                     <div class="product-details">
@@ -683,7 +690,6 @@
                 </div>
             </div>
         `;
-        document.getElementById('box-pizzas-tradicionales').innerHTML = htmlTrad;
 
         // PASTAS
         document.getElementById('box-pastas').innerHTML = `
@@ -1471,7 +1477,7 @@
         let selectoresVacios = false;
         document.querySelectorAll('.extra-select-item').forEach(sel => {
             if (sel.value === "" && !sel.classList.contains('selector-regalo-gaseosa')) {
-                selectorsVacios = true;
+                selectoresVacios = true;
             }
         });
         if(selectoresVacios) {
