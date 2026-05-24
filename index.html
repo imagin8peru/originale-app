@@ -53,7 +53,6 @@
             padding-bottom: 40px; 
         }
 
-        /* --- CABECERA --- */
         .app-header {
             background-color: var(--accent-red);
             border-radius: var(--radius);
@@ -90,7 +89,6 @@
         }
         .badge-status::before { content: ''; width: 6px; height: 6px; background: #00FF66; border-radius: 50%; display: inline-block; }
 
-        /* --- ACORDEONES --- */
         .block-section {
             background-color: transparent; 
             border-radius: var(--radius);
@@ -143,7 +141,6 @@
         .category-accordion.active .category-content { max-height: 25000px; transition: max-height 0.5s ease-in; }
         .category-accordion.active .category-trigger .arrow { transform: rotate(180deg); }
 
-        /* --- PRODUCT CARDS --- */
         .product-card {
             padding: 15px;
             border-bottom: 1px solid var(--border-light);
@@ -164,7 +161,6 @@
         .product-desc { font-size: 0.78rem; color: var(--text-muted); font-style: italic; line-height: 1.4; margin-bottom: 6px; }
         .product-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); white-space: nowrap; }
 
-        /* --- INTERFAZ CONTADORES --- */
         .salsas-dynamic-container { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 5px; }
         .unit-salsa-block { background-color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border-light); padding: 12px; border-radius: 8px; }
         .unit-salsa-title { font-size: 0.78rem; color: var(--accent-red); font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid rgba(142, 26, 26, 0.1); padding-bottom: 4px;}
@@ -188,10 +184,22 @@
 
         .ing-name-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
 
-        /* SECCIÓN EXTRAS */
         .extras-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-light); display: flex; flex-direction: column; gap: 8px; }
-        .extra-row-control { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-light); }
-        .extra-label-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+        .extra-row-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(142, 26, 26, 0.04);
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(142, 26, 26, 0.18);
+            transition: all 0.25s ease;
+        }
+        .extra-row-control.is-selected {
+            background-color: rgba(234, 160, 0, 0.12);
+            border-color: var(--accent-gold);
+        }
+        .extra-label-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-red); }
         
         .additional-selectors-box { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; padding-left: 10px; border-left: 2px solid var(--accent-gold); }
         .extra-select-item { width: 100%; padding: 6px; font-size: 0.75rem; border: 1px solid var(--border-light); border-radius: 6px; background-color: #ffffff; font-weight: 700; color: var(--text-main); outline: none; }
@@ -243,7 +251,6 @@
         .trad-sizes-box { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; width: 100%; }
         .trad-size-row { background: rgba(255,255,255,0.6); border: 1px solid var(--border-light); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 
-        /* --- FORMULARIOS --- */
         .form-padding { padding: 15px; background-color: var(--card-light); }
         .input-group { margin-bottom: 12px; }
         .input-group label { display: block; font-size: 0.75rem; color: var(--accent-red); margin-bottom: 5px; font-weight: 700; text-transform: uppercase;}
@@ -259,7 +266,6 @@
         }
         #cash-change-box { background-color: rgba(234, 160, 0, 0.05); border: 1px dashed var(--accent-gold); border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
 
-        /* --- PAGOS Y RESUMEN --- */
         .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; background-color: var(--card-light); }
         .payment-option { border: 1px solid var(--border-light); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; background-color: #ffffff; }
         .payment-option.selected { border-color: #1E6B38; background-color: rgba(30, 107, 56, 0.05); }
@@ -292,7 +298,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- VENTANA PREVIEW DE WHATSAPP --- */
         .preview-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 99999; padding: 15px; backdrop-filter: blur(4px); }
         .preview-modal-box { background-color: #E5DDD5; width: 100%; max-width: 430px; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: 1px solid #c0c0c0; }
         .preview-header { background-color: #075E54; color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
@@ -725,9 +730,10 @@
                 `;
             });
 
+            // ✅ FIX: Pan al Ajo Especial ahora aparece en TODAS las pizzas personalizadas, sin excepción
             let extrasHTML = `
                 <div class="extras-section">
-                    <div class="extra-row-control">
+                    <div class="extra-row-control ${datosViejos.ingAdic > 0 ? 'is-selected' : ''}">
                         <span class="extra-label-text">Ingrediente Adicional (+S/ 3.00)</span>
                         <div class="quantity-control" style="padding:2px 8px; gap:8px;">
                             <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
@@ -736,7 +742,7 @@
                         </div>
                     </div>
                     <div class="additional-selectors-box" id="box-pers-selectores-${cardId}-${i}"></div>
-                    <div class="extra-row-control">
+                    <div class="extra-row-control ${datosViejos.mozAdic > 0 ? 'is-selected' : ''}">
                         <span class="extra-label-text">Mozarella Adicional (+S/ 6.00)</span>
                         <div class="quantity-control" style="padding:2px 8px; gap:8px;">
                             <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
@@ -744,15 +750,14 @@
                             <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
                         </div>
                     </div>
-                    ${cardId === 'media-pizza' ? `
-                    <div class="extra-row-control">
+                    <div class="extra-row-control ${datosViejos.panAdic > 0 ? 'is-selected' : ''}">
                         <span class="extra-label-text">Pan al Ajo Especial (+S/ 9.00)</span>
                         <div class="quantity-control" style="padding:2px 8px; gap:8px;">
                             <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, -1, '${cardId}', ${i})">−</button>
                             <span class="qty-val qty-extra-pan" style="font-size:0.8rem;">${datosViejos.panAdic}</span>
                             <button class="qty-btn" style="font-size:0.9rem;" onclick="changePersonalizadaExtraLive(this, 1, '${cardId}', ${i})">+</button>
                         </div>
-                    </div>` : ''}
+                    </div>
                 </div>
             `;
 
@@ -808,6 +813,12 @@
         current += amount;
         if (current < 0) current = 0;
         valSpan.innerText = current;
+
+        const extraRow = btn.closest('.extra-row-control');
+        if (extraRow) {
+            if (current > 0) extraRow.classList.add('is-selected');
+            else extraRow.classList.remove('is-selected');
+        }
 
         if (valSpan.classList.contains('qty-extra-ing')) {
             renderPersonalizadaAdditionalSelectors(cardId, unitIdx, current, []);
@@ -925,9 +936,10 @@
                 block.querySelectorAll('.ing-row-qty').forEach(el => { mapIng[el.getAttribute('data-ing')] = parseInt(el.innerText); });
                 let ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
                 let mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
+                let panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
                 let selectedExtras = [];
                 block.querySelectorAll('.extra-select-item').forEach(sel => { selectedExtras.push(sel.value); });
-                pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, selectedExtras };
+                pasadasSelecciones[u] = { mapIng, ingAdic, mozAdic, panAdic, selectedExtras };
             }
         }
 
@@ -940,7 +952,7 @@
             }
 
             for (let pNum = 1; pNum <= promoConfig.pizzasCount; pNum++) {
-                let datosViejos = pasadasSelecciones[correlativoSubUnidad] || { mapIng: {}, ingAdic: 0, mozAdic: 0, selectedExtras: [] };
+                let datosViejos = pasadasSelecciones[correlativoSubUnidad] || { mapIng: {}, ingAdic: 0, mozAdic: 0, panAdic: 0, selectedExtras: [] };
                 let titleLabel = `ELIGE LOS INGREDIENTES DE TU PIZZA ${correlativoSubUnidad} (${promoConfig.labelSizes})`;
 
                 let rowsHTML = '';
@@ -959,12 +971,13 @@
                     `;
                 });
 
+                // ✅ FIX: Pan al Ajo Especial ahora aparece también en cada pizza de las Promos
                 container.innerHTML += `
                     <div class="unit-salsa-block" data-promo-un="${correlativoSubUnidad}" style="margin-bottom:12px;">
                         <div class="unit-salsa-title">${titleLabel} (<span class="sum-total-counter">0</span>/${promoConfig.limitEach})</div>
                         <div class="ingredients-counter-grid">${rowsHTML}</div>
                         <div class="extras-section">
-                            <div class="extra-row-control">
+                            <div class="extra-row-control ${datosViejos.ingAdic > 0 ? 'is-selected' : ''}">
                                 <span class="extra-label-text">Ingrediente Extra (+S/ 3.00)</span>
                                 <div class="quantity-control" style="padding:2px 8px; gap:8px;">
                                     <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, -1, '${cardId}', ${correlativoSubUnidad})">−</button>
@@ -973,11 +986,19 @@
                                 </div>
                             </div>
                             <div class="additional-selectors-box" id="box-promo-selectores-${cardId}-${correlativoSubUnidad}"></div>
-                            <div class="extra-row-control">
+                            <div class="extra-row-control ${datosViejos.mozAdic > 0 ? 'is-selected' : ''}">
                                 <span class="extra-label-text">Mozarella Extra (+S/ 6.00)</span>
                                 <div class="quantity-control" style="padding:2px 8px; gap:8px;">
                                     <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, -1, '${cardId}', ${correlativoSubUnidad})">−</button>
                                     <span class="qty-val qty-extra-moz">${datosViejos.mozAdic}</span>
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, 1, '${cardId}', ${correlativoSubUnidad})">+</button>
+                                </div>
+                            </div>
+                            <div class="extra-row-control ${datosViejos.panAdic > 0 ? 'is-selected' : ''}">
+                                <span class="extra-label-text">Pan al Ajo Especial (+S/ 9.00)</span>
+                                <div class="quantity-control" style="padding:2px 8px; gap:8px;">
+                                    <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, -1, '${cardId}', ${correlativoSubUnidad})">−</button>
+                                    <span class="qty-val qty-extra-pan">${datosViejos.panAdic}</span>
                                     <button class="qty-btn" style="font-size:0.9rem;" onclick="changePromoExtraLive(this, 1, '${cardId}', ${correlativoSubUnidad})">+</button>
                                 </div>
                             </div>
@@ -1032,6 +1053,12 @@
         if (current < 0) current = 0;
         valSpan.innerText = current;
 
+        const extraRow = btn.closest('.extra-row-control');
+        if (extraRow) {
+            if (current > 0) extraRow.classList.add('is-selected');
+            else extraRow.classList.remove('is-selected');
+        }
+
         if (valSpan.classList.contains('qty-extra-ing')) {
             renderPromoAdditionalSelectors(cardId, subUnitIdx, current, []);
         }
@@ -1085,7 +1112,8 @@
 
             const ingAdic = parseInt(block.querySelector('.qty-extra-ing')?.innerText || "0");
             const mozAdic = parseInt(block.querySelector('.qty-extra-moz')?.innerText || "0");
-            totalExtrasCost += (ingAdic * 3.00) + (mozAdic * 6.00);
+            const panAdic = parseInt(block.querySelector('.qty-extra-pan')?.innerText || "0");
+            totalExtrasCost += (ingAdic * 3.00) + (mozAdic * 6.00) + (panAdic * 9.00);
 
             let extrasList = [];
             block.querySelectorAll('.extra-select-item').forEach(s => extrasList.push(s.value));
@@ -1093,6 +1121,7 @@
             let buildStr = `Pizza #${indexUnidad}: [${txtIngs}]`;
             if (ingAdic > 0) buildStr += ` (+ Extras: ${extrasList.join(', ')})`;
             if (mozAdic > 0) buildStr += ` (+${mozAdic} Mozarella Extra)`;
+            if (panAdic > 0) buildStr += ` (+${panAdic} Pan al Ajo Esp.)`;
             
             resumenPizzasPromoArr.push(buildStr);
         });
@@ -1178,6 +1207,12 @@
         current += amount;
         if (current < 0) current = 0;
         valSpan.innerText = current;
+
+        const extraRow = btn.closest('.extra-row-control');
+        if (extraRow) {
+            if (current > 0) extraRow.classList.add('is-selected');
+            else extraRow.classList.remove('is-selected');
+        }
 
         if (valSpan.classList.contains('extra-t-ing')) {
             renderTradAdditionalSelectors(pizzaId, size, current);
@@ -1392,7 +1427,6 @@
         renderCart();
     }
 
-    /* --- PROCESAR PEDIDO MODO DEMO MODAL --- */
     function processOrderFlow() {
         const name = document.getElementById('client-name').value.trim();
         const phone = document.getElementById('client-phone').value.trim();
